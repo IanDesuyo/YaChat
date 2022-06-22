@@ -24,9 +24,7 @@ const App = () => {
     const mediaStreamSource = audioContext.createMediaStreamSource(stream);
     const scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
 
-    const ws = new WebSocket(
-      `ws://localhost:8080/transcribe?lid=1&sampleRate=${audioContext.sampleRate}&lang=en-US`
-    );
+    const ws = new WebSocket(`ws://localhost:8080/transcribe?lid=1&sampleRate=${audioContext.sampleRate}&lang=en-US`);
 
     const sendChunk = (chunk: Buffer) => {
       ws.send(
@@ -70,6 +68,7 @@ const App = () => {
     ws.addEventListener("close", () => {
       scriptProcessor.disconnect();
       mediaStreamSource.disconnect();
+      stream.getTracks().forEach(track => track.stop());
     });
   };
 

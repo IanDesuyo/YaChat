@@ -4,7 +4,6 @@ declare const enum OpCodes {
   AUTH_SUCCESS = 3,
   DATA = 4,
   TRANSCRIPT = 5,
-  DISCONNECT = 40,
   ANOTHER_CLIENT_CONNECTED = 41,
   AUTH_FAILED = 42,
 }

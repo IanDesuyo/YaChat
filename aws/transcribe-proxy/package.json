@@ -1,12 +1,13 @@
 {
   "name": "transcribe-proxy",
   "version": "1.0.0",
-  "description": "",
-  "main": "build/index.js",
+  "description": "A WebSocket proxy that can saves Amazon Transcribe streaming results to S3.",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node dist/index.js"
   },
-  "author": "",
+  "author": "IanDesuyo",
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.113.0",

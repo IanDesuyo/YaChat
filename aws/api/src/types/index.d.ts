@@ -1,5 +1,6 @@
-import { Db } from "mongodb";
-import { S3 } from "aws-sdk";
+import { S3Client } from "@aws-sdk/client-s3";
+import { EC2Client } from "@aws-sdk/client-ec2";
+import DBManager from "../utils/dbManager";
 
 export const enum HttpMethod {
   GET = "GET",
@@ -9,6 +10,7 @@ export const enum HttpMethod {
 }
 
 export interface App {
-  db: Db;
-  s3: S3;
+  db: DBManager;
+  s3: S3Client;
+  ec2: EC2Client;
 }

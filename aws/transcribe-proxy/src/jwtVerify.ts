@@ -24,6 +24,7 @@ interface PublicKey extends jose.JWK {
   n: string;
   use: string;
 }
+
 interface PublicKeyMeta {
   instance: PublicKey;
   pem: jose.KeyLike | Uint8Array;
@@ -46,7 +47,7 @@ interface Claim {
   client_id: string;
 }
 
-const cognitoPoolId = process.env.COGNITO_POOL_ID || "***REMOVED***";
+const cognitoPoolId = process.env.COGNITO_POOL_ID;
 if (!cognitoPoolId) {
   throw new Error("env var required for cognito pool");
 }
@@ -97,9 +98,6 @@ const handler = async (token: string): Promise<ClaimVerifyResult> => {
     const currentSeconds = Math.floor(new Date().valueOf() / 1000);
     if (currentSeconds > payload.exp || currentSeconds < payload.auth_time) {
       throw new Error("claim is expired or invalid");
-    }
-    if (payload.token_use !== "access") {
-      throw new Error("claim use is not access");
     }
 
     return {

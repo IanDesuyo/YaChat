@@ -7,6 +7,8 @@ import { S3Client, ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/clien
 import { WebSocket } from "ws";
 import jwtVerify from "./jwtVerify";
 
+const MAX_TRANSCRIPT_LENGTH = parseInt(process.env.MAX_TRANSCRIPT_LENGTH || "1000");
+
 const transcribeStreaming = new TranscribeStreamingClient({
   region: "us-east-1",
 });
@@ -14,8 +16,6 @@ const transcribeStreaming = new TranscribeStreamingClient({
 const s3 = new S3Client({
   region: "us-east-1",
 });
-
-const s3Bucket = "yachat";
 
 class ProxyTranscribe {
   ws: WebSocket;
@@ -42,9 +42,7 @@ class ProxyTranscribe {
     this.ws.once("message", async (data: string) => {
       const payload = JSON.parse(data);
 
-      if (
-        payload.op === 2 // OpCodes.AUTH
-      ) {
+      if (payload.op === OpCodes.AUTH) {
         const res = await jwtVerify(payload.d);
 
         if (res.isValid) {
@@ -53,7 +51,7 @@ class ProxyTranscribe {
 
           this.ws.send(
             JSON.stringify({
-              op: 3, // OpCodes.AUTH_SUCCESS
+              op: OpCodes.AUTH_SUCCESS,
               msg: "auth success",
             })
           );
@@ -64,7 +62,7 @@ class ProxyTranscribe {
 
       this.ws.send(
         JSON.stringify({
-          op: 42, // OpCodes.AUTH_FAILED
+          op: OpCodes.AUTH_FAILED,
           msg: "auth failed",
         })
       );
@@ -73,7 +71,7 @@ class ProxyTranscribe {
 
     this.ws.send(
       JSON.stringify({
-        op: 1, // OpCodes.CONNECTED
+        op: OpCodes.CONNECTED,
         msg: "client connected",
       })
     );
@@ -84,9 +82,7 @@ class ProxyTranscribe {
       for await (const chunk of WebSocket.createWebSocketStream(ws)) {
         const payload = JSON.parse(chunk.toString());
 
-        if (
-          payload.op === 4 // OpCodes.DATA
-        ) {
+        if (payload.op === OpCodes.DATA) {
           yield { AudioEvent: { AudioChunk: Buffer.from(payload.d, "base64") } };
         }
       }
@@ -109,7 +105,7 @@ class ProxyTranscribe {
 
   async getNextTranscriptionKey() {
     const command = new ListObjectsV2Command({
-      Bucket: s3Bucket,
+      Bucket: process.env.S3_BUCKET,
       Prefix: `transcriptions/${this.lid}/`,
     });
 
@@ -128,15 +124,13 @@ class ProxyTranscribe {
         // Print all the possible transcripts
         results.map(result => {
           if (!result.IsPartial) {
-            const transcript = result.Alternatives.map(alternative => alternative.Transcript).join(
-              "\n"
-            );
+            const transcript = result.Alternatives.map(alternative => alternative.Transcript).join("\n");
 
             this.addTranscription(transcript);
 
             this.ws.send(
               JSON.stringify({
-                op: 5, // OpCodes.TRANSCRIPT
+                op: OpCodes.TRANSCRIPT,
                 d: transcript,
               })
             );
@@ -150,7 +144,7 @@ class ProxyTranscribe {
     this.payload.push(payload);
 
     console.log("addTranscription", this.lid, payload);
-    if (this.payload.length >= 100) {
+    if (this.payload.length >= MAX_TRANSCRIPT_LENGTH) {
       this.saveTranscription(this.payload.join(" "));
       this.payload = [];
     }
@@ -159,7 +153,7 @@ class ProxyTranscribe {
   saveTranscription(transcription: string) {
     const key = `transcriptions/${this.lid}/${this.nextKey}.txt`;
     const command = new PutObjectCommand({
-      Bucket: s3Bucket,
+      Bucket: process.env.S3_BUCKET,
       Key: key,
       Body: transcription,
       Tagging: `userId=${this.userId}`,

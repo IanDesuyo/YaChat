@@ -66,7 +66,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const session = await getCurrentSession();
 
     return new Promise((resolve, reject) => {
-      const token = session?.getAccessToken().getJwtToken();
+      const token = session?.getIdToken().getJwtToken();
       
 
       if (!token) {
@@ -197,7 +197,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const updateAuth = useCallback(async (): Promise<IUser | null> => {
-    const currentUser = await getCurrentUser();
+    const currentUser = await getCurrentUser(true);
 
     if (currentUser) {
       const attributes = await getCurrentUserAttributes();

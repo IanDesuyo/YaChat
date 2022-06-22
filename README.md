@@ -18,6 +18,7 @@
   "id": "string", // MongoDB ID
   "courseId": "string", // Course ID
   "name": "string", // Lesson Name
+  "description": "string", // Lesson Description
   "createdAt": "string", // ISO Date
   "topics": []
 }
@@ -30,8 +31,13 @@
   "id": "string", // MongoDB ID
   "lessonId": "string", // Lesson ID
   "nickname": "string", // Student Name
-  "fileKeys": ["string"], // File Keys in S3
   "createdAt": "string", // ISO Date
-  "textractResults": ["string"] // Textract Results
+  "files": [
+    {
+      "key": "string", // File Key in S3
+      "textractResult": {} // Textract Result
+    }
+  ],
+  "topics": [] // Comprehend Result
 }
 ```

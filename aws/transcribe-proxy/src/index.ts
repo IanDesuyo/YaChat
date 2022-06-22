@@ -1,5 +1,5 @@
 import * as express from "express";
-import { createServer, IncomingMessage } from "http";
+import { createServer } from "http";
 import { parse } from "url";
 import { WebSocket } from "ws";
 import ProxyTranscribe from "./proxyTranscribe";
@@ -13,6 +13,7 @@ const lessons: { [key: string]: ProxyTranscribe } = {};
 
 wsServer.on("connection", (ws: WebSocket, lid: string, sampleRate: string, lang: string) => {
   if (lid in lessons) {
+    lessons[lid].ws.send(JSON.stringify({ op: OpCodes.ANOTHER_CLIENT_CONNECTED, msg: "another client connected" }));
     lessons[lid].ws.close();
   }
 
