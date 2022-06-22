@@ -1,43 +1,38 @@
 import * as express from "express";
 import { createServer, IncomingMessage } from "http";
 import { parse } from "url";
-import { WebSocketServer, WebSocket } from "ws";
+import { WebSocket } from "ws";
 import ProxyTranscribe from "./proxyTranscribe";
+import { LanguageCode } from "@aws-sdk/client-transcribe-streaming";
 
 const app = express();
 const server = createServer(app);
-const wsServer = new WebSocketServer({ noServer: true });
+const wsServer = new WebSocket.Server({ noServer: true, perMessageDeflate: false });
 
 const lessons: { [key: string]: ProxyTranscribe } = {};
 
-wsServer.on("connection", (ws: WebSocket, request: IncomingMessage, lid: string) => {
+wsServer.on("connection", (ws: WebSocket, lid: string, sampleRate: string, lang: string) => {
   if (lid in lessons) {
-    lessons[lid].close();
+    lessons[lid].ws.close();
   }
 
-  lessons[lid] = new ProxyTranscribe(ws, lid);
+  lessons[lid] = new ProxyTranscribe(ws, lid, sampleRate, lang);
 });
 
 server.on("upgrade", (request, socket, head) => {
   const { pathname, query } = parse(request.url, true);
-  // const { authorization } = request.headers;
-  const authorization = "A";
   const lid = query.lid;
-  console.log(pathname, lid, authorization);
+  const sampleRate = parseInt(query.sampleRate.toString());
+  const lang = query.lang as LanguageCode;
 
   if (pathname === "/transcribe") {
-    if (!authorization) {
-      socket.write("HTTP/1.1 403 Forbidden\r\n\r\n");
-      return socket.destroy();
-    }
-
-    if (!lid) {
+    if (!lid || !sampleRate) {
       socket.write("HTTP/1.1 400 Bad Request\r\n\r\n");
       return socket.destroy();
     }
 
     wsServer.handleUpgrade(request, socket, head, ws => {
-      wsServer.emit("connection", ws, request, lid);
+      wsServer.emit("connection", ws, lid, sampleRate, lang);
     });
   } else {
     socket.write("HTTP/1.1 404 Not Found\r\n\r\n");

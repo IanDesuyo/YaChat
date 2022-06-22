@@ -1,6 +1,10 @@
 declare const enum OpCodes {
   CONNECTED = 1,
-  MESSAGE = 2,
+  AUTH = 2,
+  AUTH_SUCCESS = 3,
+  DATA = 4,
+  TRANSCRIPT = 5,
   DISCONNECT = 40,
   ANOTHER_CLIENT_CONNECTED = 41,
+  AUTH_FAILED = 42,
 }
