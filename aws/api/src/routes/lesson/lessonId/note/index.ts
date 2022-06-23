@@ -1,9 +1,9 @@
-import { App } from "types";
-import Route from "types/route";
+import { App } from "../../../../types";
+import Route from "../../../../types/route";
 import { APIGatewayEvent } from "aws-lambda";
-import response from "utils/response";
-import { NoteCreate, NoteFile } from "types/model";
-import { parseObjectId } from "utils/parser";
+import response from "../../../../utils/response";
+import { NoteCreate, NoteFile } from "../../../../types/model";
+import { parseObjectId } from "../../../../utils/parser";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { v4 as uuidv4 } from "uuid";

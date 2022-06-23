@@ -1,5 +1,5 @@
 import { Db, ObjectId } from "mongodb";
-import * as model from "types/model";
+import * as model from "../types/model";
 
 export default class DBManager {
   db: Db;

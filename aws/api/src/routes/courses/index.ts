@@ -1,7 +1,7 @@
-import { App } from "types";
-import Route from "types/route";
+import { App } from "../../types";
+import Route from "../../types/route";
 import { APIGatewayProxyEventBase, APIGatewayProxyCognitoAuthorizer } from "aws-lambda";
-import response from "utils/response";
+import response from "../../utils/response";
 
 const GET = async (app: App, event: APIGatewayProxyEventBase<APIGatewayProxyCognitoAuthorizer>) => {
   const { sub } = event.requestContext.authorizer.claims;

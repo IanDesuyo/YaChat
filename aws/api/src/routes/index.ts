@@ -1,4 +1,4 @@
-import Route from "types/route";
+import Route from "../types/route";
 import version from "./version";
 import courses from "./courses";
 import course from "./course";

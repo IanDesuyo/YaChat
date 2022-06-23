@@ -1,7 +1,7 @@
 import { S3Client } from "@aws-sdk/client-s3";
 import { EC2Client } from "@aws-sdk/client-ec2";
 import { ComprehendClient } from "@aws-sdk/client-comprehend";
-import DBManager from "utils/dbManager";
+import DBManager from "../utils/dbManager";
 
 export const enum HttpMethod {
   GET = "GET",

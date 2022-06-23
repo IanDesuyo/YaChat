@@ -1,8 +1,8 @@
-import { App } from "types";
-import Route from "types/route";
+import { App } from "../../types";
+import Route from "../../types/route";
 import { APIGatewayProxyEventBase, APIGatewayProxyCognitoAuthorizer } from "aws-lambda";
-import response from "utils/response";
-import { CourseCreate } from "types/model";
+import response from "../../utils/response";
+import { CourseCreate } from "../../types/model";
 
 const POST = async (app: App, event: APIGatewayProxyEventBase<APIGatewayProxyCognitoAuthorizer>) => {
   const { sub, nickname } = event.requestContext.authorizer.claims;

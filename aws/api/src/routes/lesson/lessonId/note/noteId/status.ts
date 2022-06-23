@@ -1,8 +1,8 @@
-import { App } from "types";
-import Route from "types/route";
+import { App } from "../../../../../types";
+import Route from "../../../../../types/route";
 import { APIGatewayEvent } from "aws-lambda";
-import response from "utils/response";
-import { parseObjectId } from "utils/parser";
+import response from "../../../../../utils/response";
+import { parseObjectId } from "../../../../../utils/parser";
 import { StartKeyPhrasesDetectionJobCommand } from "@aws-sdk/client-comprehend";
 
 const GET = async (app: App, event: APIGatewayEvent) => {

@@ -1,10 +1,10 @@
 import { MongoClient } from "mongodb";
 import { APIGatewayEvent } from "aws-lambda";
-import routes from "routes";
-import { HttpMethod } from "types";
-import corsHandler from "utils/corsHandler";
-import DBManager from "utils/dbManager";
-import response from "utils/response";
+import routes from "./routes";
+import { HttpMethod } from "./types";
+import corsHandler from "./utils/corsHandler";
+import DBManager from "./utils/dbManager";
+import response from "./utils/response";
 import { S3Client } from "@aws-sdk/client-s3";
 import { EC2Client } from "@aws-sdk/client-ec2";
 import { ComprehendClient } from "@aws-sdk/client-comprehend";
@@ -70,7 +70,6 @@ const getHandler = (event: APIGatewayEvent) => {
  * @returns API Gateway response object
  */
 export const handler = async (event: APIGatewayEvent) => {
-  console.log(`event: ${JSON.stringify(event)}`);
   if (event.httpMethod === "OPTIONS") {
     return corsHandler(event);
   }
@@ -102,6 +101,6 @@ export const handler = async (event: APIGatewayEvent) => {
     return await routeHandler({ db, s3, ec2, comprehend }, event);
   } catch (error) {
     console.error(error);
-    return response(error.statusCode || 500, error.response || "Internal Server Error");
+    return response(error.statusCode || 500, error.response || JSON.stringify(error));
   }
 };

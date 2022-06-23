@@ -1,7 +1,7 @@
 import { Db, MongoClient } from "mongodb";
 import { S3Event } from "aws-lambda";
-import uploadHandler from "uploadHandler";
-import comprehendHandler from "comprehendHandler";
+import uploadHandler from "./uploadHandler";
+import comprehendHandler from "./comprehendHandler";
 
 var dbCache: Db;
 /**
