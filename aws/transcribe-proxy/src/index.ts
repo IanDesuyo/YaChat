@@ -4,6 +4,7 @@ import { parse } from "url";
 import { WebSocket } from "ws";
 import ProxyTranscribe from "./proxyTranscribe";
 import { LanguageCode } from "@aws-sdk/client-transcribe-streaming";
+import "./env";
 
 const app = express();
 const server = createServer(app);

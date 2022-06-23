@@ -1,5 +1,5 @@
 import { APIGatewayProxyResult } from "aws-lambda";
-import { ResponseBody } from "../types/response";
+import { ResponseBody } from "types/response";
 
 /**
  * Create a response object.

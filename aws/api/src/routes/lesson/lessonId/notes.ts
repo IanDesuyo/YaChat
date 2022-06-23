@@ -2,16 +2,24 @@ import { App } from "types";
 import Route from "types/route";
 import { APIGatewayProxyEventBase, APIGatewayProxyCognitoAuthorizer } from "aws-lambda";
 import response from "utils/response";
+import { parseObjectId } from "utils/parser";
 
 const GET = async (app: App, event: APIGatewayProxyEventBase<APIGatewayProxyCognitoAuthorizer>) => {
-  const { sub } = event.requestContext.authorizer.claims;
+  const lessonId = parseObjectId(event.pathParameters.lessonId);
 
-  const courses = await app.db.getCourses(sub);
+  const notes = await app.db.getNotes(lessonId);
+
+  if (!notes) {
+    return response(404, {
+      message: "not found",
+      i18n: "lesson.notFound",
+    });
+  }
 
   return response(200, {
     message: "success",
-    i18n: "courses.get.success",
-    data: courses,
+    i18n: "notes.get.success",
+    data: notes,
   });
 };
 

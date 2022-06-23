@@ -1,7 +1,7 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { App } from "../types";
-import response from "../utils/response";
-import { Path } from "../types/route";
+import { App } from "types";
+import response from "utils/response";
+import { Path } from "types/route";
 const packageJson = require("../../package.json");
 
 const GET = async (app: App, event: APIGatewayEvent): Promise<APIGatewayProxyResult> => {

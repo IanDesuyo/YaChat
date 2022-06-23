@@ -1,9 +1,9 @@
-import { App } from "../../types";
-import Route from "../../types/route";
+import { App } from "types";
+import Route from "types/route";
 import { APIGatewayProxyEventBase, APIGatewayProxyCognitoAuthorizer } from "aws-lambda";
-import response from "../../utils/response";
-import { LessonCreate } from "../../types/model";
-import { parseObjectId } from "../../utils/parser";
+import response from "utils/response";
+import { LessonCreate } from "types/model";
+import { parseObjectId } from "utils/parser";
 
 const POST = async (app: App, event: APIGatewayProxyEventBase<APIGatewayProxyCognitoAuthorizer>) => {
   const payload = JSON.parse(event.body) as LessonCreate;

@@ -5,7 +5,8 @@
     "noImplicitAny": true,
     "preserveConstEnums": true,
     "outDir": "./dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "baseUrl": "src"
   },
-  "include": ["./src/**/*.ts"]
+  "include": ["src"]
 }

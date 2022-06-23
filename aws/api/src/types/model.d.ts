@@ -41,3 +41,34 @@ declare interface LessonWithCourse extends Lesson {
 }
 
 declare interface Topic {}
+
+declare interface NoteFile {
+  key: string;
+  textractResult?: object;
+}
+
+declare interface fileAttribute {
+  size: number;
+  type: string;
+}
+
+declare interface _NoteCreate {
+  nickname: string;
+}
+
+declare interface NoteCreate extends _NoteCreate {
+  files: fileAttribute[];
+}
+
+declare interface NewNote extends _NoteCreate {
+  lessonId: ObjectId;
+  key: string;
+  files: NoteFile[];
+  createdAt: Date;
+}
+
+declare interface Note extends NewNote {
+  _id: ObjectId;
+  topics?: Topic[];
+  comprehendJobId?: string;
+}

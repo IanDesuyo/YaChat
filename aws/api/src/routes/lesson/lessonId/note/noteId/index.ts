@@ -6,20 +6,21 @@ import { parseObjectId } from "utils/parser";
 
 const GET = async (app: App, event: APIGatewayEvent) => {
   const lessonId = parseObjectId(event.pathParameters.lessonId);
+  const noteId = parseObjectId(event.pathParameters.noteId);
 
-  const lesson = await app.db.getLesson(lessonId);
+  const note = await app.db.getNote(noteId);
 
-  if (!lesson) {
+  if (!note) {
     return response(404, {
       message: "not found",
-      i18n: "lesson.notFound",
+      i18n: "note.notFound",
     });
   }
 
   return response(200, {
     message: "success",
-    i18n: "course.get.success",
-    data: lesson,
+    i18n: "notes.get.success",
+    data: note,
   });
 };
 

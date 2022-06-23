@@ -4,6 +4,8 @@ import * as bodyParser from "body-parser";
 import { APIGatewayEvent } from "aws-lambda";
 
 process.env.AWS_REGION = "us-east-1";
+process.env.AWS_JOB_ARN = "arn:aws:iam::***REMOVED***:role/YaChat";
+process.env.AWS_S3_BUCKET = "yachat";
 process.env.MONGODB_URI = "mongodb://yachat:***REMOVED***@44.204.53.21:27017";
 process.env.MONGODB_DB = "YaChat";
 
@@ -27,11 +29,26 @@ const auth = {
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 [
+  {
+    path: "/",
+    resource: "/",
+  },
+  {
+    path: "/courses",
+    resource: "/courses",
+  },
+  {
+    path: "/course",
+    resource: "/course",
+  },
   {
     path: "/course/:courseId",
     resource: "/course/{courseId}",
+  },
+  {
+    path: "/lesson",
+    resource: "/lesson",
   },
   {
     path: "/lesson/:lessonId",
@@ -40,6 +57,22 @@ app.use(bodyParser.json());
   {
     path: "/lesson/:lessonId/stream",
     resource: "/lesson/{lessonId}/stream",
+  },
+  {
+    path: "/lesson/:lessonId/notes",
+    resource: "/lesson/{lessonId}/notes",
+  },
+  {
+    path: "/lesson/:lessonId/note",
+    resource: "/lesson/{lessonId}/note",
+  },
+  {
+    path: "/lesson/:lessonId/note/:noteId",
+    resource: "/lesson/{lessonId}/note/{noteId}",
+  },
+  {
+    path: "/lesson/:lessonId/note/:noteId/status",
+    resource: "/lesson/{lessonId}/note/{noteId}/status",
   },
 ].forEach(({ path, resource }) => {
   app.all(path, (req, res) => {
@@ -71,36 +104,6 @@ app.use(bodyParser.json());
         res.status(500).json({ message: "Internal server error" });
       });
   });
-});
-
-app.all(["/courses", "/course", "/lesson"], (req, res) => {
-  const event: APIGatewayEvent = {
-    body: JSON.stringify(req.body),
-    headers: req.headers as any,
-    multiValueHeaders: req.headers as any,
-    httpMethod: req.method,
-    isBase64Encoded: false,
-    path: req.path,
-    pathParameters: req.params,
-    queryStringParameters: req.query as any,
-    multiValueQueryStringParameters: req.query as any,
-    stageVariables: undefined,
-    requestContext: {
-      authorizer: {
-        claims: auth,
-      },
-    } as any,
-    resource: req.path,
-  };
-
-  handler(event)
-    .then(result => {
-      res.status(result.statusCode).json(JSON.parse(result.body));
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({ message: "Internal server error" });
-    });
 });
 
 app.listen(3001, () => {

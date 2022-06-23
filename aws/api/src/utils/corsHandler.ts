@@ -1,5 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import routes from "../routes";
+import routes from "routes";
 
 export default (event: APIGatewayEvent) => {
   const route = routes[event.path];

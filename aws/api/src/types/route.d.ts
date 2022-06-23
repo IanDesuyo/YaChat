@@ -1,5 +1,5 @@
 import { APIGatewayEvent, APIGatewayProxyResult } from "aws-lambda";
-import { App } from "../types";
+import { App } from "types";
 
 export interface Path {
   GET?: (app: App, event: APIGatewayEvent) => Promise<APIGatewayProxyResult>;

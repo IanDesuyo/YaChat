@@ -1,5 +1,5 @@
-import { MongoClient, Db, ObjectId } from "mongodb";
-import * as model from "../types/model";
+import { Db, ObjectId } from "mongodb";
+import * as model from "types/model";
 
 export default class DBManager {
   db: Db;
@@ -9,7 +9,7 @@ export default class DBManager {
   }
 
   async getCourses(teacherId: string) {
-    const courses = await this.db.collection("courses").find({ teacherId }).toArray();
+    const courses = await this.db.collection("courses").aggregate().match({ teacherId }).toArray();
     return courses as model.Course[];
   }
 
@@ -55,5 +55,28 @@ export default class DBManager {
   async createLesson(lesson: model.NewLesson) {
     const result = await this.db.collection("lessons").insertOne(lesson);
     return result.insertedId;
+  }
+
+  async getNotes(lessonId: ObjectId) {
+    const notes = await this.db.collection("notes").aggregate().match({ lessonId }).toArray();
+
+    return notes as model.Note[];
+  }
+
+  async getNote(noteId: ObjectId) {
+    const note = await this.db.collection("notes").aggregate().match({ _id: noteId }).next();
+
+    return note as model.Note;
+  }
+
+  async createNote(note: model.NewNote) {
+    const result = await this.db.collection("notes").insertOne(note);
+    return result.insertedId;
+  }
+
+  async updateNote(noteId: ObjectId, data: Partial<model.Note>) {
+    const result = await this.db.collection("notes").updateOne({ _id: noteId }, { $set: data });
+
+    return result.modifiedCount === 1;
   }
 }

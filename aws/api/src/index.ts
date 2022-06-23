@@ -1,12 +1,13 @@
 import { MongoClient } from "mongodb";
 import { APIGatewayEvent } from "aws-lambda";
-import routes from "./routes";
-import { HttpMethod } from "./types";
-import corsHandler from "./utils/corsHandler";
-import DBManager from "./utils/dbManager";
-import response from "./utils/response";
+import routes from "routes";
+import { HttpMethod } from "types";
+import corsHandler from "utils/corsHandler";
+import DBManager from "utils/dbManager";
+import response from "utils/response";
 import { S3Client } from "@aws-sdk/client-s3";
 import { EC2Client } from "@aws-sdk/client-ec2";
+import { ComprehendClient } from "@aws-sdk/client-comprehend";
 
 var dbCache: DBManager;
 
@@ -15,6 +16,10 @@ const s3 = new S3Client({
 });
 
 const ec2 = new EC2Client({
+  region: process.env.AWS_REGION,
+});
+
+const comprehend = new ComprehendClient({
   region: process.env.AWS_REGION,
 });
 
@@ -94,7 +99,7 @@ export const handler = async (event: APIGatewayEvent) => {
   }
 
   try {
-    return await routeHandler({ db, s3, ec2 }, event);
+    return await routeHandler({ db, s3, ec2, comprehend }, event);
   } catch (error) {
     console.error(error);
     return response(error.statusCode || 500, error.response || "Internal Server Error");
