@@ -3,7 +3,7 @@ import Route from "../../../../../types/route";
 import { APIGatewayEvent } from "aws-lambda";
 import response from "../../../../../utils/response";
 import { parseObjectId } from "../../../../../utils/parser";
-import { StartKeyPhrasesDetectionJobCommand } from "@aws-sdk/client-comprehend";
+import { StartKeyPhrasesDetectionJobCommand, DetectKeyPhrasesCommand } from "@aws-sdk/client-comprehend";
 
 const GET = async (app: App, event: APIGatewayEvent) => {
   const lessonId = parseObjectId(event.pathParameters.lessonId);
@@ -21,7 +21,7 @@ const GET = async (app: App, event: APIGatewayEvent) => {
   const status = {
     incomplete: 0,
     completed: 0,
-    analyzed: !!note.topics,
+    analyzed: !!note.keyPhrases,
   };
 
   for (const file of note.files) {
@@ -29,23 +29,27 @@ const GET = async (app: App, event: APIGatewayEvent) => {
   }
 
   if (status.incomplete === 0 && !status.analyzed && !note.comprehendJobId) {
-    const command = new StartKeyPhrasesDetectionJobCommand({
-      InputDataConfig: {
-        S3Uri: `s3://${process.env.AWS_S3_BUCKET}/textract_result/notes/${note.key}`,
-      },
-      OutputDataConfig: {
-        S3Uri: `s3://${process.env.AWS_S3_BUCKET}/comprehend_result/notes/${note.key}`, // output.tar.gz
-      },
-      JobName: `YaChat Note analyze ${note.key}`,
+    const contents = note.files.map(file => file.textractContent).join("\n");
+
+    const comprehendCommand = new DetectKeyPhrasesCommand({
+      Text: contents,
       LanguageCode: "en",
-      DataAccessRoleArn: process.env.AWS_JOB_ARN,
     });
 
-    const result = await app.comprehend.send(command);
+    const comprehendResult = await app.comprehend.send(comprehendCommand);
 
-    await app.db.updateNote(noteId, {
-      comprehendJobId: result.JobId,
+    const success = await app.db.updateNote(noteId, {
+      keyPhrases: comprehendResult.KeyPhrases,
     });
+
+    if (!success) {
+      return response(500, {
+        message: "failed to update",
+        i18n: "note.update.failed",
+      });
+    }
+
+    status.analyzed = true;
   }
 
   return response(200, {

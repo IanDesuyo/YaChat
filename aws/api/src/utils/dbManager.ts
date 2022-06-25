@@ -58,7 +58,11 @@ export default class DBManager {
   }
 
   async getNotes(lessonId: ObjectId) {
-    const notes = await this.db.collection("notes").aggregate().match({ lessonId }).toArray();
+    const notes = await this.db
+      .collection("notes")
+      .aggregate()
+      .match({ lessonId, keyPhrases: { $exists: true } })
+      .toArray();
 
     return notes as model.Note[];
   }

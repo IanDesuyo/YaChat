@@ -4,7 +4,7 @@
   "description": "",
   "main": "build/index.js",
   "scripts": {
-    "prepbuild": "del s3-worker.zip",
+    "prebuild": "del s3-worker.zip",
     "build": "tsc",
     "postbuild": "7z a s3-worker.zip *"
   },

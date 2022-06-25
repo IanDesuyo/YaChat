@@ -1,7 +1,11 @@
 import { Db, MongoClient } from "mongodb";
 import { S3Event } from "aws-lambda";
 import uploadHandler from "./uploadHandler";
-import comprehendHandler from "./comprehendHandler";
+import { TextractClient } from "@aws-sdk/client-textract";
+
+const textractClient = new TextractClient({
+  region: process.env.AWS_REGION,
+});
 
 var dbCache: Db;
 /**
@@ -27,10 +31,10 @@ export const handler = async (event: S3Event) => {
   for (const record of event.Records) {
     const key = record.s3.object.key;
 
+    console.log(`Processing ${key}`);
+
     if (key.startsWith("uploads/notes/")) {
-      uploadHandler(event, db);
-    } else if (key.startsWith("comprehend_result/notes/")) {
-      comprehendHandler(event, db);
+      uploadHandler(event, { db, textractClient });
     }
   }
 };
