@@ -1,10 +1,10 @@
 import { App } from "../../../types";
 import Route from "../../../types/route";
-import { APIGatewayProxyEventBase, APIGatewayProxyCognitoAuthorizer } from "aws-lambda";
+import { APIGatewayEvent } from "aws-lambda";
 import response from "../../../utils/response";
 import { parseObjectId } from "../../../utils/parser";
 
-const GET = async (app: App, event: APIGatewayProxyEventBase<APIGatewayProxyCognitoAuthorizer>) => {
+const GET = async (app: App, event: APIGatewayEvent) => {
   const lessonId = parseObjectId(event.pathParameters.lessonId);
 
   const notes = await app.db.getNotes(lessonId);

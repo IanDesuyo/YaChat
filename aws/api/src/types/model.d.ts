@@ -1,4 +1,3 @@
-import { KeyPhrase } from "@aws-sdk/client-comprehend";
 import { ObjectId } from "mongodb";
 
 declare interface CourseCreate {
@@ -35,6 +34,7 @@ declare interface NewLesson extends _LessonCreate<ObjectId> {
 declare interface Lesson extends NewLesson {
   _id: ObjectId;
   keyPhrases?: KeyPhrase[];
+  notes: number;
 }
 
 declare interface LessonWithCourse extends Lesson {
@@ -43,7 +43,7 @@ declare interface LessonWithCourse extends Lesson {
 
 declare interface NoteFile {
   key: string;
-  textractResult?: object;
+  textractResult?: TextractBlock[];
   textractContent?: string;
 }
 
@@ -70,5 +70,26 @@ declare interface NewNote extends _NoteCreate {
 declare interface Note extends NewNote {
   _id: ObjectId;
   keyPhrases?: KeyPhrase[];
-  comprehendJobId?: string;
+}
+
+declare interface KeyPhrase {
+  text: string;
+  score: number;
+}
+
+declare interface TextractBlock {
+  text: string;
+  type: string;
+  confidence: number;
+  boundingBox: {
+    top: number;
+    left: number;
+    height: number;
+    width: number;
+  };
+  id: string;
+  relationships?: {
+    type: string;
+    ids: string[];
+  }[];
 }

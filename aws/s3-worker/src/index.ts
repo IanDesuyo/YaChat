@@ -34,7 +34,9 @@ export const handler = async (event: S3Event) => {
     console.log(`Processing ${key}`);
 
     if (key.startsWith("uploads/notes/")) {
-      uploadHandler(event, { db, textractClient });
+      await uploadHandler(record, { db, textractClient });
+    } else {
+      console.warn(`Should not be triggered by ${key}`);
     }
   }
 };

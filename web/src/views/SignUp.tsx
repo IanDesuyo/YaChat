@@ -15,15 +15,16 @@ import { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 
-const SignUp = () => {
+const SignUpView = () => {
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
   const toast = useToast();
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     setLoading(true);
+    setError("");
     e.preventDefault();
     e.stopPropagation();
 
@@ -52,7 +53,7 @@ const SignUp = () => {
 
   return (
     <Container maxW="container.md" mt={10}>
-      <Text fontSize="4xl">登入</Text>
+      <Text fontSize="4xl">註冊</Text>
       <Divider my={6} />
       <Box>
         <form onSubmit={handleSubmit}>
@@ -76,11 +77,11 @@ const SignUp = () => {
               註冊
             </Button>
             <HStack>
-              <Text fontSize="sm" color="gray.600" as={NavLink} to="/login">
+              <Text fontSize="sm" color="gray.500" as={NavLink} to="/login">
                 登入
               </Text>
               <Divider orientation="vertical" />
-              <Text fontSize="sm" color="gray.600" as={NavLink} to="/help">
+              <Text fontSize="sm" color="gray.500" as={NavLink} to="/help">
                 取得協助
               </Text>
             </HStack>
@@ -91,4 +92,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignUpView;

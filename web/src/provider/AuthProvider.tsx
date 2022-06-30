@@ -8,6 +8,7 @@ import {
   ISignUpResult,
 } from "amazon-cognito-identity-js";
 import { useToast } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
 
 const userPool = new CognitoUserPool({
   UserPoolId: process.env.REACT_APP_COGNITO_USERPOOL as string,
@@ -25,6 +26,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const toast = useToast();
   const [isAuthenticated, setAuthenticated] = useState<AuthType | null>(null);
   const [user, setUser] = useState<IUser | null>(null);
+  const navigate = useNavigate();
 
   const getCurrentUser = async (getSession = false) => {
     const currentUser = userPool.getCurrentUser();
@@ -67,7 +69,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     return new Promise((resolve, reject) => {
       const token = session?.getIdToken().getJwtToken();
-      
 
       if (!token) {
         return reject(new Error("No token"));
@@ -83,22 +84,20 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const currentUser = await getCurrentUser(true);
 
     return new Promise((resolve, reject) => {
-      currentUser?.getUserAttributes(
-        (err: Error | undefined, attributes: CognitoUserAttribute[] | undefined) => {
-          if (err) {
-            return reject(err);
-          }
-
-          const userAttributes = attributes
-            ? attributes.reduce((acc, attribute) => {
-                (acc as any)[attribute.getName()] = attribute.getValue();
-                return acc;
-              }, {})
-            : {};
-
-          resolve(userAttributes);
+      currentUser?.getUserAttributes((err: Error | undefined, attributes: CognitoUserAttribute[] | undefined) => {
+        if (err) {
+          return reject(err);
         }
-      );
+
+        const userAttributes = attributes
+          ? attributes.reduce((acc, attribute) => {
+              (acc as any)[attribute.getName()] = attribute.getValue();
+              return acc;
+            }, {})
+          : {};
+
+        resolve(userAttributes);
+      });
     }).catch(err => {
       throw err;
     }) as Promise<UserAttributes>;
@@ -112,16 +111,13 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     return new Promise((resolve, reject) => {
-      currentUser?.updateAttributes(
-        cognitoAttributes,
-        (err: Error | undefined, result: string | undefined) => {
-          if (err) {
-            return reject(err);
-          }
-
-          resolve(result);
+      currentUser?.updateAttributes(cognitoAttributes, (err: Error | undefined, result: string | undefined) => {
+        if (err) {
+          return reject(err);
         }
-      );
+
+        resolve(result);
+      });
     }).catch(err => {
       throw err;
     });
@@ -145,7 +141,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
               toast({
                 title: "登入成功",
-                description: `您已經登入成功，${user?.attributes.nickname}`,
+                description: `歡迎回來, ${user?.attributes.nickname}`,
                 status: "success",
               });
             });
@@ -188,6 +184,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const currentUser = await getCurrentUser();
 
     return new Promise((resolve, _) => {
+      navigate("/");
       currentUser?.signOut();
       updateAuth();
       resolve(true);
@@ -220,11 +217,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     updateAuth();
   }, [updateAuth]);
-
-  useEffect(() => {
-    console.log(isAuthenticated, user);
-  }, [isAuthenticated, user]);
-
+  
   return (
     <AuthContext.Provider
       value={{

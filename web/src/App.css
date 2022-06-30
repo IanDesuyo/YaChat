@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap");
+
+* {
+  font-family: "Noto Sans TC", sans-serif;
+}
+
+#main-sec1 {
+  background: linear-gradient(45deg, rgba(13, 6, 134, 1) 0%, rgba(9, 9, 121, 1) 5%, rgba(0, 212, 255, 1) 100%);
+  color: white;
+}
+
+#main-sec1-title {
+  filter: drop-shadow(2px 2px 10px rgba(0, 0, 0, 0.25));
+}
+
+#main-word-cloud {
+  background: url(../public/static/cloud.svg) no-repeat;
+  background-position: center -30px;
+  animation: floating 10s ease-in-out infinite;
+  filter: drop-shadow(2px 2px 10px rgba(0, 0, 0, 0.35));
+}
+
+#main-word-cloud div span {
+  transition: transform 0.5s ease-in-out;
+}
+
+#main-word-cloud div span:hover {
+  transform: scale(1.05) !important;
+  transition: transform 0.2s ease-in-out;
+}
+
+@keyframes floating {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

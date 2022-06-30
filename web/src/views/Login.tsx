@@ -1,29 +1,18 @@
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  FormControl,
-  FormLabel,
-  HStack,
-  Input,
-  Text,
-  useToast,
-  VStack,
-} from "@chakra-ui/react";
+import { Box, Button, Container, Divider, FormControl, FormLabel, HStack, Input, Text, VStack } from "@chakra-ui/react";
 import { useContext, useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 
-const Login = () => {
+const LoginView = () => {
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
-  const toast = useToast();
+  const [searchParams] = useSearchParams();
   const [error, setError] = useState("");
   const [isLoading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     setLoading(true);
+    setError("");
     e.preventDefault();
     e.stopPropagation();
 
@@ -33,7 +22,7 @@ const Login = () => {
     auth
       .signIn(email.value, password.value)
       .then(session => {
-        navigate("/");
+        navigate(searchParams.get("next") || "/", { replace: true });
       })
       .catch(err => {
         console.log(err);
@@ -45,6 +34,11 @@ const Login = () => {
   return (
     <Container maxW="container.md" mt={10}>
       <Text fontSize="4xl">登入</Text>
+      {searchParams.get("s") === "1" && (
+        <Text align="center" color="red.400">
+          請先登入以繼續使用
+        </Text>
+      )}
       <Divider my={6} />
       <Box>
         <form onSubmit={handleSubmit}>
@@ -64,11 +58,11 @@ const Login = () => {
               登入
             </Button>
             <HStack>
-              <Text fontSize="sm" color="gray.600" as={NavLink} to="/signup">
+              <Text fontSize="sm" color="gray.500" as={NavLink} to="/signup">
                 立即註冊
               </Text>
               <Divider orientation="vertical" />
-              <Text fontSize="sm" color="gray.600" as={NavLink} to="/help">
+              <Text fontSize="sm" color="gray.500" as={NavLink} to="/help">
                 取得協助
               </Text>
             </HStack>
@@ -79,4 +73,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoginView;

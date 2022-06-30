@@ -3,7 +3,7 @@ import Route from "../../../../../types/route";
 import { APIGatewayEvent } from "aws-lambda";
 import response from "../../../../../utils/response";
 import { parseObjectId } from "../../../../../utils/parser";
-import { StartKeyPhrasesDetectionJobCommand, DetectKeyPhrasesCommand } from "@aws-sdk/client-comprehend";
+import { DetectKeyPhrasesCommand } from "@aws-sdk/client-comprehend";
 
 const GET = async (app: App, event: APIGatewayEvent) => {
   const lessonId = parseObjectId(event.pathParameters.lessonId);
@@ -28,7 +28,7 @@ const GET = async (app: App, event: APIGatewayEvent) => {
     status[file.textractResult ? "completed" : "incomplete"]++;
   }
 
-  if (status.incomplete === 0 && !status.analyzed && !note.comprehendJobId) {
+  if (status.incomplete === 0 && !status.analyzed) {
     const contents = note.files.map(file => file.textractContent).join("\n");
 
     const comprehendCommand = new DetectKeyPhrasesCommand({
@@ -38,8 +38,21 @@ const GET = async (app: App, event: APIGatewayEvent) => {
 
     const comprehendResult = await app.comprehend.send(comprehendCommand);
 
+    // Find all key phrases with a confidence of at least 50% and remove duplicates
+    const texts: string[] = [];
+    const keyPhrases = comprehendResult.KeyPhrases.sort((a, b) => b.Score - a.Score)
+      .map(kp => {
+        const text = kp.Text.toLowerCase();
+
+        if (!texts.includes(text)) {
+          texts.push(text);
+          return { text, score: kp.Score };
+        }
+      })
+      .filter(Boolean);
+
     const success = await app.db.updateNote(noteId, {
-      keyPhrases: comprehendResult.KeyPhrases,
+      keyPhrases,
     });
 
     if (!success) {

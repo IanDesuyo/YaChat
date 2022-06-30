@@ -6,7 +6,8 @@
   "scripts": {
     "prebuild": "del api.zip",
     "build": "tsc",
-    "postbuild": "7z a api.zip *"
+    "postbuild": "7z a api.zip *",
+    "dev": "ts-node src/testHandler.ts"
   },
   "author": "IanDesuyo",
   "license": "ISC",
@@ -21,9 +22,11 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.100",
+    "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/mongodb": "^4.0.7",
     "@types/uuid": "^8.3.4",
+    "cors": "^2.8.5",
     "express": "^4.18.1"
   }
 }

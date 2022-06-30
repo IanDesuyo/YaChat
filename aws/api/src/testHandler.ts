@@ -1,12 +1,13 @@
 import { handler } from ".";
 import * as express from "express";
 import * as bodyParser from "body-parser";
+import * as cors from "cors";
 import { APIGatewayEvent } from "aws-lambda";
 
 process.env.AWS_REGION = "us-east-1";
 process.env.AWS_JOB_ARN = "arn:aws:iam::***REMOVED***:role/YaChat";
 process.env.AWS_S3_BUCKET = "yachat";
-process.env.MONGODB_URI = "mongodb://yachat:***REMOVED***@44.204.53.21:27017";
+process.env.MONGODB_URI = "mongodb://yachat:***REMOVED***@***REMOVED***:27017";
 process.env.MONGODB_DB = "YaChat";
 
 const auth = {
@@ -27,6 +28,7 @@ const auth = {
 };
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 [

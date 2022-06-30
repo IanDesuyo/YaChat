@@ -17,14 +17,36 @@ export default class DBManager {
     // TODO: get lessons
     const course = await this.db
       .collection("courses")
-      .aggregate()
-      .match({ _id: courseId })
-      .lookup({
-        from: "lessons",
-        localField: "_id",
-        foreignField: "courseId",
-        as: "lessons",
-      })
+      .aggregate([
+        {
+          $match: { _id: courseId },
+        },
+        {
+          $lookup: {
+            from: "lessons",
+            localField: "_id",
+            foreignField: "courseId",
+            as: "lessons",
+            pipeline: [
+              {
+                $lookup: {
+                  from: "notes",
+                  localField: "_id",
+                  foreignField: "lessonId",
+                  as: "notes",
+                },
+              },
+              {
+                $set: {
+                  notes: {
+                    $size: "$notes",
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ])
       .next();
 
     return course as model.CourseWithLessons;
@@ -38,15 +60,37 @@ export default class DBManager {
   async getLesson(lessonId: ObjectId) {
     const lesson = await this.db
       .collection("lessons")
-      .aggregate()
-      .match({ _id: lessonId })
-      .lookup({
-        from: "courses",
-        localField: "courseId",
-        foreignField: "_id",
-        as: "course",
-      })
-      .unwind("$course")
+      .aggregate([
+        {
+          $match: { _id: lessonId },
+        },
+        {
+          $lookup: {
+            from: "notes",
+            localField: "_id",
+            foreignField: "lessonId",
+            as: "notes",
+          },
+        },
+        {
+          $set: {
+            notes: {
+              $size: "$notes",
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: "courses",
+            localField: "courseId",
+            foreignField: "_id",
+            as: "course",
+          },
+        },
+        {
+          $unwind: "$course",
+        },
+      ])
       .next();
 
     return lesson as model.LessonWithCourse;

@@ -17,25 +17,24 @@ import {
   Center,
   MenuDivider,
   MenuItem,
+  useColorMode,
+  useColorModeValue,
 } from "@chakra-ui/react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
+import { ApiContext } from "../provider/ApiProvider";
 
-interface NavItem {
+interface INavItemProps {
   label: string;
   href: string;
 }
 
-const NAV_ITEMS: NavItem[] = [
+const NAV_ITEMS: INavItemProps[] = [
   {
     label: "課程管理",
     href: "/courses",
-  },
-  {
-    label: "上課紀錄",
-    href: "/notes",
   },
   {
     label: "常見問題",
@@ -43,27 +42,48 @@ const NAV_ITEMS: NavItem[] = [
   },
 ];
 
+const NavItem = ({ href, label }: INavItemProps) => {
+  return (
+    <Box>
+      <Link
+        as={NavLink}
+        to={href}
+        p={2}
+        fontSize="sm"
+        fontWeight={500}
+        color={useColorModeValue("black", "white")}
+        _hover={{
+          textDecoration: "none",
+          color: "gray.500",
+        }}
+        _activeLink={{
+          borderBottom: 1,
+          borderStyle: "solid",
+        }}
+      >
+        {label}
+      </Link>
+    </Box>
+  );
+};
+
 const TopBar = () => {
-  const { isOpen, onToggle } = useDisclosure();
+  const { isOpen, onToggle, onClose } = useDisclosure();
+  const api = useContext(ApiContext);
 
   return (
-    <Box as="header" position="fixed" w="100%" top="0">
+    <Box as="header" position="fixed" w="100%" top="0" zIndex="sticky">
       <Flex
-        bg="white"
-        color="gray.600"
+        bg={useColorModeValue("white", "black")}
         h={{ base: "5vh", md: "6vh" }}
         py={{ base: 2 }}
         px={{ base: 4 }}
-        borderBottom={1}
+        borderBottom={useColorModeValue(1, 0)}
         borderStyle="solid"
         borderColor="gray.200"
         align="center"
       >
-        <Flex
-          flex={{ base: 1, md: "auto" }}
-          ml={{ base: -2 }}
-          display={{ base: "flex", md: "none" }}
-        >
+        <Flex flex={{ base: 1, md: "auto" }} ml={{ base: -2 }} display={{ base: "flex", md: "none" }}>
           <IconButton
             onClick={onToggle}
             icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
@@ -73,13 +93,7 @@ const TopBar = () => {
         </Flex>
 
         <Flex flex={{ base: "auto", md: 1 }} justify={{ base: "center", md: "start" }}>
-          <Text
-            as={NavLink}
-            to="/"
-            fontSize="xl"
-            textAlign={{ base: "center", md: "left" }}
-            color="gray.800"
-          >
+          <Text as={NavLink} to="/" fontSize="xl" textAlign={{ base: "center", md: "left" }} onClick={onClose}>
             YaChat有聲
           </Text>
 
@@ -87,26 +101,7 @@ const TopBar = () => {
             <Divider orientation="vertical" mx={15} />
             <HStack spacing={6}>
               {NAV_ITEMS.map((navItem, index) => (
-                <Box key={index}>
-                  <Link
-                    as={NavLink}
-                    to={navItem.href}
-                    p={2}
-                    fontSize="sm"
-                    fontWeight={500}
-                    color="black"
-                    _hover={{
-                      textDecoration: "none",
-                      color: "gray.500",
-                    }}
-                    _activeLink={{
-                      borderBottom: 1,
-                      borderStyle: "solid",
-                    }}
-                  >
-                    {navItem.label}
-                  </Link>
-                </Box>
+                <NavItem key={index} {...navItem} />
               ))}
             </HStack>
           </Flex>
@@ -121,7 +116,7 @@ const TopBar = () => {
         in={isOpen}
         animateOpacity
         style={{
-          background: "white",
+          background: useColorModeValue("white", "black"),
           position: "fixed",
           zIndex: 1,
           width: "100%",
@@ -134,7 +129,6 @@ const TopBar = () => {
               <Link
                 as={NavLink}
                 to={navItem.href}
-                color="black"
                 _hover={{
                   textDecoration: "none",
                 }}
@@ -148,6 +142,30 @@ const TopBar = () => {
             </Box>
           ))}
         </VStack>
+        <Divider />
+        <Text p={4} display={{ md: "none" }}>
+          最近的課程
+        </Text>
+        <VStack p={4} spacing={4} display={{ md: "none" }}>
+          {/* TODO: FIX HERE
+           {api.recentLessons.map((lesson, index) => (
+            <Box key={index}>
+              <Link
+                as={NavLink}
+                to={`/lesson/${lesson._id}`}
+                _hover={{
+                  textDecoration: "none",
+                }}
+                _activeLink={{
+                  fontWeight: 600,
+                }}
+                onClick={onToggle}
+              >
+                {lesson.courseName}-{lesson.name}
+              </Link>
+            </Box>
+          ))} */}
+        </VStack>
       </Collapse>
     </Box>
   );
@@ -158,9 +176,11 @@ export default TopBar;
 const AccountMenu = () => {
   const auth = useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { colorMode, toggleColorMode } = useColorMode();
 
   const handleLogin = () => {
-    let currentPath = window.location.pathname;
+    let currentPath = location.pathname;
     if (currentPath === "/login" || currentPath === "/register") {
       currentPath = "/";
     }
@@ -173,7 +193,7 @@ const AccountMenu = () => {
       <MenuButton as={Button} rounded="full" variant="link" cursor="pointer" minW={0}>
         <Avatar name={auth.user?.attributes.nickname} size="sm" />
       </MenuButton>
-      <MenuList p={4}>
+      <MenuList p={4} zIndex="popover">
         <Center>
           <Avatar name={auth.user?.attributes.nickname} size="2xl" />
         </Center>
@@ -184,15 +204,13 @@ const AccountMenu = () => {
         <MenuItem as={NavLink} to="/user/me">
           個人資料
         </MenuItem>
-        <MenuItem as={NavLink} to="/user/me/likes">
-          我的最愛
-        </MenuItem>
+        <MenuItem onClick={toggleColorMode}>{colorMode === "light" ? "切換為夜間模式" : "切換為日間模式"}</MenuItem>
         <MenuItem onClick={auth.signOut}>登出</MenuItem>
       </MenuList>
     </Menu>
   ) : (
     <>
-      <Button fontSize="sm" fontWeight={400} bg="white" onClick={handleLogin}>
+      <Button fontSize="sm" fontWeight={400} onClick={handleLogin}>
         登入
       </Button>
       <Button
