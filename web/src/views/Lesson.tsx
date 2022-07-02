@@ -6,12 +6,15 @@ import { AuthContext } from "../provider/AuthProvider";
 import { LessonWithCourse } from "../types/model";
 import { AiOutlineCloud } from "react-icons/ai";
 import { MdUploadFile, MdOutlineInsertDriveFile, MdOutlineRecordVoiceOver } from "react-icons/md";
+import { StorageContext } from "../provider/StorageProvider";
+import Recorder from "../components/Recorder";
 
 const LessonView = () => {
   const { lessonId } = useParams();
   const navigate = useNavigate();
   const api = useContext(ApiContext);
   const auth = useContext(AuthContext);
+  const { setRecents } = useContext(StorageContext);
   const [lesson, setLesson] = useState<LessonWithCourse>();
   const [isLoading, setLoading] = useState(true);
 
@@ -25,6 +28,12 @@ const LessonView = () => {
       .then(setLesson)
       .then(() => setLoading(false));
   }, [api, lessonId, navigate]);
+
+  useEffect(() => {
+    if (lesson) {
+      setRecents({ _id: lesson._id, name: lesson.name, courseName: lesson.course.name }, false);
+    }
+  }, [lesson, setRecents]);
 
   return (
     <Container maxW="container.xl">
@@ -45,20 +54,15 @@ const LessonView = () => {
             </Text>
           </Skeleton>
 
-          <Wrap spacing={4}>
-            <Skeleton w={{ base: "100%", sm: "45%", lg: "30%" }} isLoaded={!isLoading}>
-              <Button as={Link} to="record" borderRadius="xl" py={6} w="100%" h="100%">
-                <VStack spacing={2}>
-                  <Icon as={MdOutlineRecordVoiceOver} w={24} h={24} />
-                  <Text>錄音分析</Text>
-                </VStack>
-              </Button>
+          <Wrap spacing={12} justify="center">
+            <Skeleton w="90%" isLoaded={!isLoading}>
+              <Recorder serverUrl="" />
             </Skeleton>
           </Wrap>
           <Divider my={4} />
         </>
       )}
-      <Wrap spacing={4}>
+      <Wrap spacing={4} justify="center">
         <Skeleton w={{ base: "100%", sm: "45%", lg: "30%" }} isLoaded={!isLoading}>
           <Button as={Link} to="cloud" borderRadius="xl" py={6} w="100%" h="100%" colorScheme="cyan">
             <VStack spacing={2}>

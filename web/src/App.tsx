@@ -17,6 +17,7 @@ import NewLessonView from "./views/NewLesson";
 import LessonView from "./views/Lesson";
 
 import "./App.css";
+import StorageProvider from "./provider/StorageProvider";
 
 const NeedSignIn = () => {
   const auth = useContext(AuthContext);
@@ -31,24 +32,26 @@ const App = () => {
       <HashRouter>
         <AuthProvider>
           <ApiProvider>
-            <TopBar />
-            <Box mt={{ base: "5vh", md: "6vh" }}>
-              <Routes>
-                <Route path="/" element={<IndexView />} />
-                <Route path="login" element={<LoginView />} />
-                <Route path="signup" element={<SignUpView />} />
-                <Route element={<NeedSignIn />}>
-                  <Route path="/courses" element={<CoursesView />} />
-                  <Route path="/course/new" element={<NewCourseView />} />
-                  <Route path="/course/:courseId" element={<CourseView />} />
-                  <Route path="/course/:courseId/new" element={<NewLessonView />} />
-                </Route>
-                <Route path="/lesson/:lessonId" element={<LessonView />} />
-                <Route path="/lesson/:lessonId/cloud" element={<LessonResultView />} />
-                <Route path="/lesson/:lessonId/upload" element={<UploadNoteView />} />
-                <Route path="/record" element={<RecordView />} />
-              </Routes>
-            </Box>
+            <StorageProvider>
+              <TopBar />
+              <Box mt={{ base: "5vh", md: "6vh" }}>
+                <Routes>
+                  <Route path="/" element={<IndexView />} />
+                  <Route path="login" element={<LoginView />} />
+                  <Route path="signup" element={<SignUpView />} />
+                  <Route element={<NeedSignIn />}>
+                    <Route path="/courses" element={<CoursesView />} />
+                    <Route path="/course/new" element={<NewCourseView />} />
+                    <Route path="/course/:courseId" element={<CourseView />} />
+                    <Route path="/course/:courseId/new" element={<NewLessonView />} />
+                  </Route>
+                  <Route path="/lesson/:lessonId" element={<LessonView />} />
+                  <Route path="/lesson/:lessonId/cloud" element={<LessonResultView />} />
+                  <Route path="/lesson/:lessonId/upload" element={<UploadNoteView />} />
+                  <Route path="/record" element={<RecordView />} />
+                </Routes>
+              </Box>
+            </StorageProvider>
           </ApiProvider>
         </AuthProvider>
       </HashRouter>

@@ -1,23 +1,23 @@
-declare enum AuthType {
+export enum AuthType {
   Unauthorized = 0,
   Authenticated = 1,
 }
 
-declare interface SignUpAttributes {
+export interface SignUpAttributes {
   nickname: string;
 }
 
-declare interface UserAttributes extends SignUpAttributes {
+export interface UserAttributes extends SignUpAttributes {
   email: string;
   email_verified: boolean;
 }
 
-declare interface IUser {
+export interface IUser {
   attributes: UserAttributes;
   username: string;
 }
 
-declare interface IAuth {
+export interface IAuth {
   isAuthenticated: AuthType | null;
   user: IUser | null;
   getCurrentUser: () => Promise<CognitoUser>;

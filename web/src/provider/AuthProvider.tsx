@@ -9,6 +9,7 @@ import {
 } from "amazon-cognito-identity-js";
 import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { IAuth, IUser, UserAttributes, SignUpAttributes } from "../types/auth";
 
 const userPool = new CognitoUserPool({
   UserPoolId: process.env.REACT_APP_COGNITO_USERPOOL as string,
@@ -217,7 +218,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     updateAuth();
   }, [updateAuth]);
-  
+
   return (
     <AuthContext.Provider
       value={{

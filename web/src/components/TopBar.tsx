@@ -24,7 +24,7 @@ import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
-import { ApiContext } from "../provider/ApiProvider";
+import { StorageContext } from "../provider/StorageProvider";
 
 interface INavItemProps {
   label: string;
@@ -69,7 +69,7 @@ const NavItem = ({ href, label }: INavItemProps) => {
 
 const TopBar = () => {
   const { isOpen, onToggle, onClose } = useDisclosure();
-  const api = useContext(ApiContext);
+  const { recents } = useContext(StorageContext);
 
   return (
     <Box as="header" position="fixed" w="100%" top="0" zIndex="sticky">
@@ -147,8 +147,7 @@ const TopBar = () => {
           最近的課程
         </Text>
         <VStack p={4} spacing={4} display={{ md: "none" }}>
-          {/* TODO: FIX HERE
-           {api.recentLessons.map((lesson, index) => (
+          {recents.map((lesson, index) => (
             <Box key={index}>
               <Link
                 as={NavLink}
@@ -164,7 +163,7 @@ const TopBar = () => {
                 {lesson.courseName}-{lesson.name}
               </Link>
             </Box>
-          ))} */}
+          ))}
         </VStack>
       </Collapse>
     </Box>

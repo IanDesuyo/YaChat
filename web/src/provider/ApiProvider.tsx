@@ -62,7 +62,8 @@ const ApiProvider = ({ children }: { children: React.ReactNode }) => {
           title: "Error",
           description: body.message,
           status: "error",
-          duration: 5000,
+          duration: null,
+          isClosable: true,
         });
 
         throw new Error(body.message);

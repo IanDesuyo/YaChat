@@ -1,12 +1,12 @@
 import { Course, CourseCreate, CourseWithLessons, LessonWithCourse, LessonCreate, NoteCreateResponse } from "./model";
 
-declare interface ResponseBody<T> {
+export interface ResponseBody<T> {
   message?: string;
   i18n?: string;
   data?: T;
 }
 
-declare interface IApi {
+export interface IApi {
   fetchApi: (method: string, path: string, data?: any) => Promise<{ body: ResponseBody<any>; res: Response }>;
   getCourses: () => Promise<Course[]>;
   getCourse: (courseId: string) => Promise<CourseWithLessons>;
@@ -15,11 +15,4 @@ declare interface IApi {
   createLesson: (lesson: LessonCreate) => Promise<string>;
   getNotes: (lessonId: string) => Promise<Note[]>;
   createNote: (lessonId: string, data: NoteCreate) => Promise<NoteCreateResponse>;
-}
-
-declare interface RecentLesson {
-  _id: string;
-  name: string;
-  courseName: string;
-  lastVisitAt?: Date;
 }
