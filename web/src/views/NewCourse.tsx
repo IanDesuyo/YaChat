@@ -30,7 +30,7 @@ const NewCourseView = () => {
   };
 
   return (
-    <Container maxW="container.md" mt={10}>
+    <Container maxW="container.md" my={10}>
       <Text fontSize="4xl">建立課程</Text>
       <Divider my={6} />
       <form onSubmit={handleSubmit}>

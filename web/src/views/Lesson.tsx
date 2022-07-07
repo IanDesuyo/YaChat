@@ -16,6 +16,7 @@ const LessonView = () => {
   const auth = useContext(AuthContext);
   const { setRecents } = useContext(StorageContext);
   const [lesson, setLesson] = useState<LessonWithCourse>();
+  const [streamUrl, setStreamUrl] = useState<string>();
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,6 +28,8 @@ const LessonView = () => {
       .getLesson(lessonId)
       .then(setLesson)
       .then(() => setLoading(false));
+
+    api.getLessonStreamUrl(lessonId).then(setStreamUrl);
   }, [api, lessonId, navigate]);
 
   useEffect(() => {
@@ -36,7 +39,7 @@ const LessonView = () => {
   }, [lesson, setRecents]);
 
   return (
-    <Container maxW="container.xl">
+    <Container maxW="container.xl" my={10}>
       <Skeleton w="fit-content" isLoaded={!isLoading}>
         <Text fontSize="4xl" mb={4}>
           {lesson ? `${lesson.course.name} - ${lesson.name}` : "Loading..."}
@@ -56,7 +59,7 @@ const LessonView = () => {
 
           <Wrap spacing={12} justify="center">
             <Skeleton w="90%" isLoaded={!isLoading}>
-              <Recorder serverUrl="" />
+              <Recorder serverUrl={streamUrl || ""} />
             </Skeleton>
           </Wrap>
           <Divider my={4} />
@@ -64,7 +67,7 @@ const LessonView = () => {
       )}
       <Wrap spacing={4} justify="center">
         <Skeleton w={{ base: "100%", sm: "45%", lg: "30%" }} isLoaded={!isLoading}>
-          <Button as={Link} to="cloud" borderRadius="xl" py={6} w="100%" h="100%" colorScheme="cyan">
+          <Button as={Link} to="cloud" borderRadius="xl" py={6} w="100%" h="100%" colorScheme="blue">
             <VStack spacing={2}>
               <Icon as={AiOutlineCloud} w={24} h={24} />
               <Text>課堂文字雲</Text>

@@ -27,5 +27,6 @@ export interface IAuth {
   setCurrentUserAttributes: (attributes: { [key: string]: any }) => Promise<unknown>;
   signIn: (email: string, password: string) => Promise<CognitoUserSession>;
   signUp: (email: string, password: string, attributes: SignUpAttributes) => Promise<CognitoUser>;
+  verificationCode: (email: string, code: string) => Promise<string>;
   signOut: () => Promise<true>;
 }

@@ -24,7 +24,7 @@ const CourseView = () => {
   }, [api, courseId, navigate]);
 
   return (
-    <Container maxW="container.xl">
+    <Container maxW="container.xl" my={10}>
       <Skeleton w="fit-content" isLoaded={!isLoading}>
         <Text fontSize="4xl" mb={4}>
           {course?.name || "Loading..."}
@@ -34,7 +34,7 @@ const CourseView = () => {
         <Text>{course?.description || "The beautiful thing about learning is nobody can take it away from you."}</Text>
       </Skeleton>
       <Divider my={4} />
-      <Skeleton w="fit-content" isLoaded={!isLoading}>
+      <Skeleton w="fit-content" isLoaded={!isLoading} mb={2}>
         <Text fontSize="2xl">此課程的上課紀錄</Text>
       </Skeleton>
       <Wrap spacing={4}>

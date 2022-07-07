@@ -101,6 +101,12 @@ export default class DBManager {
     return result.insertedId;
   }
 
+  async updateLesson(lessonId: ObjectId, data: Partial<model.Lesson>) {
+    const result = await this.db.collection("lessons").updateOne({ _id: lessonId }, { $set: data });
+
+    return result.modifiedCount === 1;
+  }
+
   async getNotes(lessonId: ObjectId) {
     const notes = await this.db
       .collection("notes")

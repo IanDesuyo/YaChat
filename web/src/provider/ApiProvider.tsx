@@ -10,6 +10,7 @@ import {
   Note,
   NoteCreate,
   NoteCreateResponse,
+  NoteStatusResponse,
 } from "../types/model";
 import { AuthContext } from "./AuthProvider";
 
@@ -102,6 +103,13 @@ const ApiProvider = ({ children }: { children: React.ReactNode }) => {
     return lesson;
   };
 
+  const getLessonStreamUrl = async (lessonId: string) => {
+    const { body } = await fetchApi("GET", `/lesson/${lessonId}/stream`);
+    const url = body.data as string;
+
+    return url;
+  };
+
   const createLesson = async (lesson: LessonCreate) => {
     const { body } = await fetchApi("POST", "/lesson", lesson);
     const lessonId = body.data as string;
@@ -116,6 +124,13 @@ const ApiProvider = ({ children }: { children: React.ReactNode }) => {
     return notes;
   };
 
+  const getNote = async (lessonId: string, noteId: string) => {
+    const { body } = await fetchApi("GET", `/lesson/${lessonId}/note/${noteId}`);
+    const note = body.data as Note;
+
+    return note;
+  };
+
   const createNote = async (lessonId: string, data: NoteCreate) => {
     const { body } = await fetchApi("POST", `/lesson/${lessonId}/note`, data);
     const note = body.data as NoteCreateResponse;
@@ -123,9 +138,28 @@ const ApiProvider = ({ children }: { children: React.ReactNode }) => {
     return note;
   };
 
+  const getNoteStatus = async (lessonId: string, noteId: string) => {
+    const { body } = await fetchApi("GET", `/lesson/${lessonId}/note/${noteId}/status`);
+    const status = body.data as NoteStatusResponse;
+
+    return status;
+  };
+
   return (
     <ApiContext.Provider
-      value={{ fetchApi, getCourses, getCourse, createCourse, getLesson, createLesson, getNotes, createNote }}
+      value={{
+        fetchApi,
+        getCourses,
+        getCourse,
+        createCourse,
+        getLesson,
+        getLessonStreamUrl,
+        createLesson,
+        getNotes,
+        getNote,
+        createNote,
+        getNoteStatus,
+      }}
     >
       {children}
     </ApiContext.Provider>

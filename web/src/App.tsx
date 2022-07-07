@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route, Outlet, Navigate, useLocation } from "react-
 import { useContext } from "react";
 import { Box, ChakraProvider } from "@chakra-ui/react";
 import AuthProvider, { AuthContext } from "./provider/AuthProvider";
+import StorageProvider from "./provider/StorageProvider";
 import IndexView from "./views/Index";
 import LoginView from "./views/Login";
 import SignUpView from "./views/SignUp";
@@ -15,9 +16,9 @@ import UploadNoteView from "./views/UploadNote";
 import NewCourseView from "./views/NewCourse";
 import NewLessonView from "./views/NewLesson";
 import LessonView from "./views/Lesson";
+import NotesView from "./views/Notes";
 
 import "./App.css";
-import StorageProvider from "./provider/StorageProvider";
 
 const NeedSignIn = () => {
   const auth = useContext(AuthContext);
@@ -34,7 +35,7 @@ const App = () => {
           <ApiProvider>
             <StorageProvider>
               <TopBar />
-              <Box mt={{ base: "5vh", md: "6vh" }}>
+              <Box mt={{ base: "5vh", md: "6vh" }} minH="90vh">
                 <Routes>
                   <Route path="/" element={<IndexView />} />
                   <Route path="login" element={<LoginView />} />
@@ -46,6 +47,7 @@ const App = () => {
                     <Route path="/course/:courseId/new" element={<NewLessonView />} />
                   </Route>
                   <Route path="/lesson/:lessonId" element={<LessonView />} />
+                  <Route path="/lesson/:lessonId/notes" element={<NotesView />} />
                   <Route path="/lesson/:lessonId/cloud" element={<LessonResultView />} />
                   <Route path="/lesson/:lessonId/upload" element={<UploadNoteView />} />
                   <Route path="/record" element={<RecordView />} />

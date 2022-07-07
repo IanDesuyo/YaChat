@@ -17,7 +17,7 @@ const CoursesView = () => {
   }, [api]);
 
   return (
-    <Container maxW="container.xl">
+    <Container maxW="container.xl" my={10}>
       <Text fontSize="4xl">您的課程</Text>
       {isLoading ? (
         <Center mt={20}>

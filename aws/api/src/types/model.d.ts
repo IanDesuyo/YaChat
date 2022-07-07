@@ -34,6 +34,7 @@ declare interface NewLesson extends _LessonCreate<ObjectId> {
 declare interface Lesson extends NewLesson {
   _id: ObjectId;
   keyPhrases?: KeyPhrase[];
+  keyPhrasesJobId: string;
   notes: number;
 }
 

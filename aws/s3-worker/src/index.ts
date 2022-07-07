@@ -1,6 +1,7 @@
 import { Db, MongoClient } from "mongodb";
 import { S3Event } from "aws-lambda";
 import uploadHandler from "./uploadHandler";
+import comprehendHandler from "./comprehendHandler";
 import { TextractClient } from "@aws-sdk/client-textract";
 
 const textractClient = new TextractClient({
@@ -35,6 +36,8 @@ export const handler = async (event: S3Event) => {
 
     if (key.startsWith("uploads/notes/")) {
       await uploadHandler(record, { db, textractClient });
+    } else if (key.startsWith("transcription_result/")) {
+      await comprehendHandler(record, { db, textractClient });
     } else {
       console.warn(`Should not be triggered by ${key}`);
     }

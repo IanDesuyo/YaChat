@@ -12,7 +12,10 @@ export interface IApi {
   getCourse: (courseId: string) => Promise<CourseWithLessons>;
   createCourse: (course: CourseCreate) => Promise<string>;
   getLesson: (lessonId: string) => Promise<LessonWithCourse>;
+  getLessonStreamUrl: (lessonId: string) => Promise<string>;
   createLesson: (lesson: LessonCreate) => Promise<string>;
   getNotes: (lessonId: string) => Promise<Note[]>;
+  getNote: (lessonId: string, noteId: string) => Promise<Note>;
   createNote: (lessonId: string, data: NoteCreate) => Promise<NoteCreateResponse>;
+  getNoteStatus: (lessonId: string, noteId: string) => Promise<NoteStatusResponse>;
 }

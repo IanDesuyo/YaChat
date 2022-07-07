@@ -32,7 +32,7 @@ const LoginView = () => {
   };
 
   return (
-    <Container maxW="container.md" mt={10}>
+    <Container maxW="container.md" my={10}>
       <Text fontSize="4xl">登入</Text>
       {searchParams.get("s") === "1" && (
         <Text align="center" color="red.400">

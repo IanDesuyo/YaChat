@@ -94,4 +94,4 @@ ws.addEventListener("close", () => {
 });
 ```
 
-You should see the results saved at `s3://<S3_BUCKET>/transcriptions/<LID>/<INCREASE_INDEX>.txt`
+You should see the results saved at `s3://<S3_BUCKET>/transcriptions/<LID>.txt`

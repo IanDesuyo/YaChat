@@ -1,6 +1,7 @@
-import { Box, Button, Center, Container, Flex, Text } from "@chakra-ui/react";
+import { Box, Button, Center, Flex, Text } from "@chakra-ui/react";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
+import Footer from "../components/Footer";
 import WordCloudBox from "../components/WordCloud";
 import { AuthContext } from "../provider/AuthProvider";
 
@@ -18,7 +19,7 @@ const IndexView = () => {
             justifyContent={{ base: "auto", lg: "space-between" }}
           >
             <Flex direction="column" justifyContent="center" w="100%">
-              <Text fontSize={96} fontWeight="bold" id="main-sec1-title" lineHeight={1.2}>
+              <Text fontSize={96} fontWeight="bold" id="main-sec1-title" lineHeight={1.2} mt={{ base: 10, lg: undefined }}>
                 Ya Chat 有聲
               </Text>
               <Text fontSize={40} display="grid">
@@ -56,9 +57,7 @@ const IndexView = () => {
           </Flex>
         </Center>
       </Box>
-      <Container>
-        <Box>協助您檢視教學成果</Box>
-      </Container>
+      <Footer />
     </Box>
   );
 };

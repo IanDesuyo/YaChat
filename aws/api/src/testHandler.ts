@@ -61,6 +61,10 @@ app.use(bodyParser.json());
     resource: "/lesson/{lessonId}/stream",
   },
   {
+    path: "/lesson/:lessonId/analyze",
+    resource: "/lesson/{lessonId}/analyze",
+  },
+  {
     path: "/lesson/:lessonId/notes",
     resource: "/lesson/{lessonId}/notes",
   },

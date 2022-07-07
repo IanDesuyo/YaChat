@@ -143,28 +143,32 @@ const TopBar = () => {
           ))}
         </VStack>
         <Divider />
-        <Text p={4} display={{ md: "none" }}>
-          最近的課程
-        </Text>
-        <VStack p={4} spacing={4} display={{ md: "none" }}>
-          {recents.map((lesson, index) => (
-            <Box key={index}>
-              <Link
-                as={NavLink}
-                to={`/lesson/${lesson._id}`}
-                _hover={{
-                  textDecoration: "none",
-                }}
-                _activeLink={{
-                  fontWeight: 600,
-                }}
-                onClick={onToggle}
-              >
-                {lesson.courseName}-{lesson.name}
-              </Link>
-            </Box>
-          ))}
-        </VStack>
+        {recents.length > 0 && (
+          <>
+            <Text p={4} display={{ md: "none" }}>
+              最近的課程
+            </Text>
+            <VStack p={4} spacing={4} display={{ md: "none" }}>
+              {recents.map((lesson, index) => (
+                <Box key={index}>
+                  <Link
+                    as={NavLink}
+                    to={`/lesson/${lesson._id}`}
+                    _hover={{
+                      textDecoration: "none",
+                    }}
+                    _activeLink={{
+                      fontWeight: 600,
+                    }}
+                    onClick={onToggle}
+                  >
+                    {lesson.courseName}-{lesson.name}
+                  </Link>
+                </Box>
+              ))}
+            </VStack>
+          </>
+        )}
       </Collapse>
     </Box>
   );
@@ -200,9 +204,6 @@ const AccountMenu = () => {
           <Text fontSize="xl">{auth.user?.attributes.nickname}</Text>
         </Center>
         <MenuDivider />
-        <MenuItem as={NavLink} to="/user/me">
-          個人資料
-        </MenuItem>
         <MenuItem onClick={toggleColorMode}>{colorMode === "light" ? "切換為夜間模式" : "切換為日間模式"}</MenuItem>
         <MenuItem onClick={auth.signOut}>登出</MenuItem>
       </MenuList>

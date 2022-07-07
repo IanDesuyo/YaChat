@@ -29,21 +29,15 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<IUser | null>(null);
   const navigate = useNavigate();
 
-  const getCurrentUser = async (getSession = false) => {
+  const getCurrentUser = async () => {
     const currentUser = userPool.getCurrentUser();
 
     return new Promise((resolve, reject) => {
-      if (currentUser && getSession) {
-        currentUser.getSession((err: Error | undefined, session: CognitoUserSession | null) => {
-          if (err) {
-            return reject(err);
-          }
-
-          return resolve(currentUser);
-        });
+      if (currentUser) {
+        return resolve(currentUser);
       }
 
-      resolve(currentUser);
+      return resolve(null);
     }).catch(err => {
       throw err;
     }) as Promise<CognitoUser | null>;
@@ -82,23 +76,29 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const getCurrentUserAttributes = useCallback(async () => {
-    const currentUser = await getCurrentUser(true);
+    const currentUser = await getCurrentUser();
 
     return new Promise((resolve, reject) => {
-      currentUser?.getUserAttributes((err: Error | undefined, attributes: CognitoUserAttribute[] | undefined) => {
-        if (err) {
-          return reject(err);
-        }
+      if (currentUser) {
+        currentUser.getSession((err: Error | undefined, session: CognitoUserSession | null) => {
+          currentUser.getUserAttributes((err: Error | undefined, attributes: CognitoUserAttribute[] | undefined) => {
+            if (err) {
+              return reject(err);
+            }
 
-        const userAttributes = attributes
-          ? attributes.reduce((acc, attribute) => {
-              (acc as any)[attribute.getName()] = attribute.getValue();
-              return acc;
-            }, {})
-          : {};
+            const userAttributes = attributes
+              ? attributes.reduce((acc, attribute) => {
+                  (acc as any)[attribute.getName()] = attribute.getValue();
+                  return acc;
+                }, {})
+              : {};
 
-        resolve(userAttributes);
-      });
+            return resolve(userAttributes);
+          });
+        });
+      } else {
+        reject("No current user");
+      }
     }).catch(err => {
       throw err;
     }) as Promise<UserAttributes>;
@@ -181,6 +181,23 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }) as Promise<CognitoUser>;
   };
 
+  const verificationCode = async (email: string, code: string) => {
+    return new Promise((resolve, reject) => {
+      new CognitoUser({
+        Username: email,
+        Pool: userPool,
+      }).confirmRegistration(code, true, (err: Error | undefined, result: string | undefined) => {
+        if (err) {
+          return reject(err);
+        }
+
+        resolve(result);
+      });
+    }).catch(err => {
+      throw err;
+    }) as Promise<string>;
+  };
+
   const signOut = async () => {
     const currentUser = await getCurrentUser();
 
@@ -195,7 +212,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const updateAuth = useCallback(async (): Promise<IUser | null> => {
-    const currentUser = await getCurrentUser(true);
+    const currentUser = await getCurrentUser();
 
     if (currentUser) {
       const attributes = await getCurrentUserAttributes();
@@ -231,6 +248,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setCurrentUserAttributes,
         signIn,
         signUp,
+        verificationCode,
         signOut,
       }}
     >

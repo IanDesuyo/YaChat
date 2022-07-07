@@ -3,11 +3,9 @@ import {
   StartStreamTranscriptionCommand,
   StartStreamTranscriptionCommandOutput,
 } from "@aws-sdk/client-transcribe-streaming";
-import { S3Client, ListObjectsV2Command, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
 import { WebSocket } from "ws";
 import jwtVerify from "./jwtVerify";
-
-const MAX_TRANSCRIPT_LENGTH = parseInt(process.env.MAX_TRANSCRIPT_LENGTH || "1000");
 
 const transcribeStreaming = new TranscribeStreamingClient({
   region: "us-east-1",
@@ -23,7 +21,6 @@ class ProxyTranscribe {
   sampleRate: string;
   lang: string;
   payload: string[];
-  nextKey: number;
   userId: string;
 
   constructor(ws: WebSocket, lid: string, sampleRate: string, lang: string) {
@@ -32,9 +29,7 @@ class ProxyTranscribe {
     this.sampleRate = sampleRate;
     this.lang = lang;
     this.payload = [];
-    this.getNextTranscriptionKey().then(count => {
-      this.nextKey = count;
-    });
+    this.loadTranscription();
 
     this.ws.onerror = this.errorHandler.bind(this);
     this.ws.onclose = this.closeHandler.bind(this);
@@ -103,25 +98,10 @@ class ProxyTranscribe {
     transcribeStreaming.send(command).then(this.resultHandler.bind(this));
   }
 
-  async getNextTranscriptionKey() {
-    const command = new ListObjectsV2Command({
-      Bucket: process.env.S3_BUCKET,
-      Prefix: `transcriptions/${this.lid}/`,
-    });
-
-    const result = await s3.send(command);
-
-    console.log("getNextTranscriptionKey", this.lid, result.KeyCount);
-    return result.KeyCount; // the folder is a key
-  }
-
   async resultHandler(res: StartStreamTranscriptionCommandOutput) {
     for await (const event of res.TranscriptResultStream) {
       if (event.TranscriptEvent) {
-        const message = event.TranscriptEvent;
-        // Get multiple possible results
         const results = event.TranscriptEvent.Transcript.Results;
-        // Print all the possible transcripts
         results.map(result => {
           if (!result.IsPartial) {
             const transcript = result.Alternatives.map(alternative => alternative.Transcript).join("\n");
@@ -140,40 +120,51 @@ class ProxyTranscribe {
     }
   }
 
-  addTranscription(payload: string) {
-    this.payload.push(payload);
-
-    console.log("addTranscription", this.lid, payload);
-    if (this.payload.length >= MAX_TRANSCRIPT_LENGTH) {
-      this.saveTranscription(this.payload.join(" "));
-      this.payload = [];
-    }
+  addTranscription(transcript: string) {
+    this.payload.push(transcript);
   }
 
-  saveTranscription(transcription: string) {
-    const key = `transcriptions/${this.lid}/${this.nextKey}.txt`;
+  async loadTranscription() {
+    const key = `transcriptions/${this.lid}`;
+
+    const command = new GetObjectCommand({
+      Bucket: process.env.S3_BUCKET,
+      Key: key,
+    });
+
+    const result = await s3.send(command);
+
+    if (result.Body) {
+      this.payload.unshift(result.Body.toString());
+    }
+
+    console.log("loadTranscription", this.lid, this.payload.length);
+  }
+
+  async saveTranscription() {
+    const key = `transcriptions/${this.lid}`;
+
     const command = new PutObjectCommand({
       Bucket: process.env.S3_BUCKET,
       Key: key,
-      Body: transcription,
+      Body: this.payload.join(" "),
       Tagging: `userId=${this.userId}`,
     });
 
-    s3.send(command)
-      .then(res => {
-        console.log("saveTranscription", `${this.lid} saved to ${key}`);
-        this.nextKey++;
-      })
-      .catch(err => {
-        console.log("saveTranscription", `${this.lid} error: ${err}`);
-      });
+    const result = await s3.send(command);
+
+    if (result.ETag) {
+      console.log("saveTranscription", this.lid, this.payload.length);
+    } else {
+      console.log("saveTranscription failed", this.lid, this.payload.length);
+    }
   }
 
   closeHandler() {
     console.log(`${this.lid} disconnected`);
 
     if (this.payload.length > 0) {
-      this.saveTranscription(this.payload.join(" "));
+      this.saveTranscription();
     }
   }
 

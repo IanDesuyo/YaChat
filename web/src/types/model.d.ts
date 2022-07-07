@@ -96,3 +96,9 @@ export interface NoteCreateResponse {
   noteId: string;
   uploadUrls: string[];
 }
+
+export interface NoteStatusResponse  {
+  incomplete: number;
+  completed: number;
+  analyzed: boolean;
+}
