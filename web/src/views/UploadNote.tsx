@@ -21,7 +21,6 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import UploadBox from "../components/UploadBox";
 import { ApiContext } from "../provider/ApiProvider";
-import { Note } from "../types/model";
 import wordRanking from "../utils/wordRanking";
 
 const UploadNoteView = () => {

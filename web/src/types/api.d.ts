@@ -18,4 +18,5 @@ export interface IApi {
   getNote: (lessonId: string, noteId: string) => Promise<Note>;
   createNote: (lessonId: string, data: NoteCreate) => Promise<NoteCreateResponse>;
   getNoteStatus: (lessonId: string, noteId: string) => Promise<NoteStatusResponse>;
+  doLessonAnalyze: (lessonId: string) => Promise<void>;
 }

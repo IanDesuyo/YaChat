@@ -48,6 +48,11 @@ const POST = async (app: App, event: APIGatewayProxyEventBase<APIGatewayProxyCog
       message: "not found",
       i18n: "lesson.notFound",
     });
+  } else if (lesson.keyPhrasesJobId) {
+    return response(400, {
+      message: "already analyzed",
+      i18n: "lesson.alreadyAnalyzed",
+    });
   }
 
   const jobResult = await app.comprehend.send(
@@ -61,7 +66,7 @@ const POST = async (app: App, event: APIGatewayProxyEventBase<APIGatewayProxyCog
       },
       LanguageCode: "en",
       DataAccessRoleArn: process.env.AWS_JOB_ARN,
-      JobName: `YaChat - KeyPharses Detection [${lessonId}]`,
+      JobName: `YaChat - KeyPharses Detection ${lessonId}`,
     })
   );
 

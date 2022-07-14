@@ -10,6 +10,7 @@ import {
 import { useToast } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { IAuth, IUser, UserAttributes, SignUpAttributes } from "../types/auth";
+import CustomSpinner from "../components/Spinner";
 
 const userPool = new CognitoUserPool({
   UserPoolId: process.env.REACT_APP_COGNITO_USERPOOL as string,
@@ -252,7 +253,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signOut,
       }}
     >
-      {isAuthenticated !== null ? children : <p>Loading</p>}
+      {isAuthenticated !== null ? children : <CustomSpinner />}
     </AuthContext.Provider>
   );
 };

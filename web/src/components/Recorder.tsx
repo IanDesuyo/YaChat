@@ -15,19 +15,23 @@ import {
   ButtonGroup,
 } from "@chakra-ui/react";
 import { useContext, useState } from "react";
+import { Link } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 import pcmEncodeChunk from "../utils/pcmEncodeChunk";
 
 interface IRecorderProps {
   serverUrl: string;
+  isAnalyzing?: boolean;
+  isAnalyzed?: boolean;
+  handleAnalyze: () => void;
 }
 
-const Recorder = ({ serverUrl }: IRecorderProps) => {
+const Recorder = ({ serverUrl, isAnalyzing = false, isAnalyzed = false, handleAnalyze }: IRecorderProps) => {
   const auth = useContext(AuthContext);
   const toast = useToast();
   const [isRecording, setIsRecording] = useState(false);
   const [ws, setWs] = useState<WebSocket>();
-  const [lastTranscript, setLastTranscript] = useState("TEST TEST TEST");
+  const [lastTranscript, setLastTranscript] = useState("");
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const start = async () => {
@@ -115,7 +119,15 @@ const Recorder = ({ serverUrl }: IRecorderProps) => {
           <Text fontSize="xl" mb={4}>
             課堂錄音分析
           </Text>
-          {isRecording ? (
+          {isAnalyzed ? (
+            <Button as={Link} to="teachercloud" colorScheme="blue">
+              查看分析結果
+            </Button>
+          ) : isAnalyzing ? (
+            <Button colorScheme="orange" disabled>
+              分析中...
+            </Button>
+          ) : isRecording ? (
             <Button onClick={stop} colorScheme="red">
               結束錄音
             </Button>
@@ -138,7 +150,14 @@ const Recorder = ({ serverUrl }: IRecorderProps) => {
               <Button variant="ghost" onClick={onClose}>
                 取消
               </Button>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
+              <Button
+                colorScheme="blue"
+                mr={3}
+                onClick={() => {
+                  handleAnalyze();
+                  onClose();
+                }}
+              >
                 開始分析
               </Button>
             </ButtonGroup>

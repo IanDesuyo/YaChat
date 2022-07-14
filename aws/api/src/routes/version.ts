@@ -13,6 +13,7 @@ const GET = async (app: App, event: APIGatewayEvent): Promise<APIGatewayProxyRes
     },
   });
 };
+
 export default {
   GET,
 } as Path;

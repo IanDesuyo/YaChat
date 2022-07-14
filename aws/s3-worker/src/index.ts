@@ -3,8 +3,13 @@ import { S3Event } from "aws-lambda";
 import uploadHandler from "./uploadHandler";
 import comprehendHandler from "./comprehendHandler";
 import { TextractClient } from "@aws-sdk/client-textract";
+import { S3Client } from "@aws-sdk/client-s3";
 
 const textractClient = new TextractClient({
+  region: process.env.AWS_REGION,
+});
+
+const s3 = new S3Client({
   region: process.env.AWS_REGION,
 });
 
@@ -35,9 +40,9 @@ export const handler = async (event: S3Event) => {
     console.log(`Processing ${key}`);
 
     if (key.startsWith("uploads/notes/")) {
-      await uploadHandler(record, { db, textractClient });
+      await uploadHandler(record, { db, textractClient, s3 });
     } else if (key.startsWith("transcription_result/")) {
-      await comprehendHandler(record, { db, textractClient });
+      await comprehendHandler(record, { db, textractClient, s3 });
     } else {
       console.warn(`Should not be triggered by ${key}`);
     }

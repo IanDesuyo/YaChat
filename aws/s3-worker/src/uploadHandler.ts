@@ -1,6 +1,7 @@
 import { S3EventRecord } from "aws-lambda";
 import { Db } from "mongodb";
 import { TextractClient, DetectDocumentTextCommand } from "@aws-sdk/client-textract";
+import { S3Client } from "@aws-sdk/client-s3";
 
 const keyRegex =
   /uploads\/notes\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/;
@@ -10,7 +11,7 @@ const keyRegex =
  * @param event S3 event
  * @param db MongoDB instance
  */
-const handler = async (record: S3EventRecord, app: { db: Db; textractClient: TextractClient }) => {
+const handler = async (record: S3EventRecord, app: { db: Db; textractClient: TextractClient; s3: S3Client }) => {
   const bucket = record.s3.bucket.name;
   const key = record.s3.object.key;
 

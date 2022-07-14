@@ -1,30 +1,31 @@
-import { HashRouter, Routes, Route, Outlet, Navigate, useLocation } from "react-router-dom";
-import { useContext } from "react";
+import { HashRouter, Routes, Route } from "react-router-dom";
+import { lazy, Suspense } from "react";
 import { Box, ChakraProvider } from "@chakra-ui/react";
-import AuthProvider, { AuthContext } from "./provider/AuthProvider";
+import AuthProvider from "./provider/AuthProvider";
 import StorageProvider from "./provider/StorageProvider";
 import IndexView from "./views/Index";
 import LoginView from "./views/Login";
 import SignUpView from "./views/SignUp";
 import RecordView from "./Record";
 import TopBar from "./components/TopBar";
-import CoursesView from "./views/Courses";
 import ApiProvider from "./provider/ApiProvider";
-import CourseView from "./views/Course";
 import LessonResultView from "./views/LessonResult";
+import LessonTeacherResultView from "./views/LessonTeacherResult";
 import UploadNoteView from "./views/UploadNote";
-import NewCourseView from "./views/NewCourse";
-import NewLessonView from "./views/NewLesson";
 import LessonView from "./views/Lesson";
 import NotesView from "./views/Notes";
 
 import "./App.css";
+import CustomSpinner from "./components/Spinner";
 
-const NeedSignIn = () => {
-  const auth = useContext(AuthContext);
-  const location = useLocation();
+const LazyLoad = ({ component }: { component: string }) => {
+  const Component = lazy(() => import(`./views/${component}`));
 
-  return auth.isAuthenticated ? <Outlet /> : <Navigate to={`/login?next=${location.pathname}&s=1`} replace />;
+  return (
+    <Suspense fallback={<CustomSpinner />}>
+      <Component />
+    </Suspense>
+  );
 };
 
 const App = () => {
@@ -40,15 +41,12 @@ const App = () => {
                   <Route path="/" element={<IndexView />} />
                   <Route path="login" element={<LoginView />} />
                   <Route path="signup" element={<SignUpView />} />
-                  <Route element={<NeedSignIn />}>
-                    <Route path="/courses" element={<CoursesView />} />
-                    <Route path="/course/new" element={<NewCourseView />} />
-                    <Route path="/course/:courseId" element={<CourseView />} />
-                    <Route path="/course/:courseId/new" element={<NewLessonView />} />
-                  </Route>
+                  <Route path="/course/*" element={<LazyLoad component="LazyCourse.tsx" />} />
+                  <Route path="/courses/*" element={<LazyLoad component="LazyCourses.tsx" />} />
                   <Route path="/lesson/:lessonId" element={<LessonView />} />
                   <Route path="/lesson/:lessonId/notes" element={<NotesView />} />
                   <Route path="/lesson/:lessonId/cloud" element={<LessonResultView />} />
+                  <Route path="/lesson/:lessonId/teachercloud" element={<LessonTeacherResultView />} />
                   <Route path="/lesson/:lessonId/upload" element={<UploadNoteView />} />
                   <Route path="/record" element={<RecordView />} />
                 </Routes>

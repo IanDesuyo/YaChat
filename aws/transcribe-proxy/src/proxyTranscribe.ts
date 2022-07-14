@@ -132,11 +132,13 @@ class ProxyTranscribe {
       Key: key,
     });
 
-    const result = await s3.send(command);
+    try {
+      const result = await s3.send(command);
 
-    if (result.Body) {
-      this.payload.unshift(result.Body.toString());
-    }
+      if (result.Body) {
+        this.payload.unshift(result.Body.toString());
+      }
+    } catch (e) {}
 
     console.log("loadTranscription", this.lid, this.payload.length);
   }

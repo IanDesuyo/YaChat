@@ -5,7 +5,7 @@ import { ApiContext } from "../provider/ApiProvider";
 import { AuthContext } from "../provider/AuthProvider";
 import { LessonWithCourse } from "../types/model";
 import { AiOutlineCloud } from "react-icons/ai";
-import { MdUploadFile, MdOutlineInsertDriveFile, MdOutlineRecordVoiceOver } from "react-icons/md";
+import { MdUploadFile, MdOutlineInsertDriveFile } from "react-icons/md";
 import { StorageContext } from "../provider/StorageProvider";
 import Recorder from "../components/Recorder";
 
@@ -16,7 +16,6 @@ const LessonView = () => {
   const auth = useContext(AuthContext);
   const { setRecents } = useContext(StorageContext);
   const [lesson, setLesson] = useState<LessonWithCourse>();
-  const [streamUrl, setStreamUrl] = useState<string>();
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,8 +27,6 @@ const LessonView = () => {
       .getLesson(lessonId)
       .then(setLesson)
       .then(() => setLoading(false));
-
-    api.getLessonStreamUrl(lessonId).then(setStreamUrl);
   }, [api, lessonId, navigate]);
 
   useEffect(() => {
@@ -37,6 +34,13 @@ const LessonView = () => {
       setRecents({ _id: lesson._id, name: lesson.name, courseName: lesson.course.name }, false);
     }
   }, [lesson, setRecents]);
+
+  const handleAnalyze = async () => {
+    if (lesson && lessonId && !lesson?.keyPhrasesJobId) {
+      await api.doLessonAnalyze(lessonId);
+      setLesson(prev => ({ ...prev, keyPhrasesJobId: "1" } as LessonWithCourse));
+    }
+  };
 
   return (
     <Container maxW="container.xl" my={10}>
@@ -59,7 +63,12 @@ const LessonView = () => {
 
           <Wrap spacing={12} justify="center">
             <Skeleton w="90%" isLoaded={!isLoading}>
-              <Recorder serverUrl={streamUrl || ""} />
+              <Recorder
+                serverUrl={`wss://d1mdaworr0wnnd.cloudfront.net/transcribe?lid=${lessonId}`}
+                isAnalyzing={!!(lesson && lesson.keyPhrasesJobId)}
+                isAnalyzed={!!(lesson && lesson.keyPhrases)}
+                handleAnalyze={handleAnalyze}
+              />
             </Skeleton>
           </Wrap>
           <Divider my={4} />

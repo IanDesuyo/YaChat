@@ -36,9 +36,9 @@ const WordCloudBox = ({ words, onClick, options, useDiv, ...props }: IWorldCloud
     if (WordCloudJS.isSupported && elements.length > 0) {
       WordCloudJS(elements, {
         rotateRatio: 0,
-        gridSize: Math.round((16 * size.width) / 1024),
+        gridSize: Math.round((8 * size.width) / 1024),
         weightFactor: function (s) {
-          if (boardCanvasRef.current) return (Math.pow(s, 1) * size.width) / 32;
+          if (boardCanvasRef.current) return (Math.pow(s, 1) * size.width) / 128;
           return 2;
         },
         fontFamily: "Noto Sans TC, sans-serif",

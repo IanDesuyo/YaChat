@@ -16,8 +16,6 @@ import { AuthContext } from "./AuthProvider";
 
 export const ApiContext = createContext<IApi>({} as any);
 
-const API_URL = "/v1" || "http://localhost:3001";
-
 const ApiProvider = ({ children }: { children: React.ReactNode }) => {
   const auth = useContext(AuthContext);
   const toast = useToast();
@@ -47,7 +45,7 @@ const ApiProvider = ({ children }: { children: React.ReactNode }) => {
     async (method: string, path: string, data?: any) => {
       const token = await getToken();
 
-      const res = await fetch(`${API_URL}${path}`, {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}${path}`, {
         method,
         headers: {
           "Content-Type": "application/json",
@@ -145,6 +143,12 @@ const ApiProvider = ({ children }: { children: React.ReactNode }) => {
     return status;
   };
 
+  const doLessonAnalyze = async (lessonId: string) => {
+    const { body } = await fetchApi("POST", `/lesson/${lessonId}/analyze`);
+
+    return;
+  };
+
   return (
     <ApiContext.Provider
       value={{
@@ -159,6 +163,7 @@ const ApiProvider = ({ children }: { children: React.ReactNode }) => {
         getNote,
         createNote,
         getNoteStatus,
+        doLessonAnalyze,
       }}
     >
       {children}

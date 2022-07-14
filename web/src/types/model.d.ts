@@ -32,6 +32,7 @@ export interface NewLesson extends _LessonCreate<string> {
 export interface Lesson extends NewLesson {
   _id: string;
   keyPhrases?: KeyPhrase[];
+  keyPhrasesJobId?: string;
   notes: number;
 }
 
@@ -97,7 +98,7 @@ export interface NoteCreateResponse {
   uploadUrls: string[];
 }
 
-export interface NoteStatusResponse  {
+export interface NoteStatusResponse {
   incomplete: number;
   completed: number;
   analyzed: boolean;
