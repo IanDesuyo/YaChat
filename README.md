@@ -1,43 +1,29 @@
-# Courses
+# Ya Chat 有聲
 
-```json
-{
-  "id": "string", // MongoDB ID
-  "name": "string", // Course Name
-  "description": "string", // Course Description
-  "teacherId": "***REMOVED***", // Cognito username
-  "teacherName": "string", // Teacher Name, should update when Cognito username changes
-  "createdAt": "string" // ISO Date
-}
+學生筆記即時回饋平台
+
+## 檔案架構
+
+```
+.
+├── README.md
+├── aws
+│   ├── api - Lambda Function, 處理API Gateway的事件
+│   ├── ec2 - 執行EC2的指令
+│   ├── s3-worker - 處理S3事件
+│   └── transcribe-proxy - 透過Websocket串流轉錄麥克風至Transcribe, 並儲存至S3
+├── test
+│   └── thunder-collection_YaChat.json - Thunder Client Collection
+└── web - React網頁
 ```
 
-# Lessons
+## AWS Services
 
-```json
-{
-  "id": "string", // MongoDB ID
-  "courseId": "string", // Course ID
-  "name": "string", // Lesson Name
-  "description": "string", // Lesson Description
-  "createdAt": "string", // ISO Date
-  "topics": []
-}
-```
-
-# StudentNotes
-
-```json
-{
-  "id": "string", // MongoDB ID
-  "lessonId": "string", // Lesson ID
-  "nickname": "string", // Student Name
-  "createdAt": "string", // ISO Date
-  "files": [
-    {
-      "key": "string", // File Key in S3
-      "textractResult": {} // Textract Result
-    }
-  ],
-  "topics": [] // Comprehend Result
-}
-```
+- S3
+- API Gateway
+- Lambda
+- EC2
+- Transcribe
+- Comprehend
+- CloudFront
+- Cognito
