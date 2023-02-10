@@ -1,3 +1,4 @@
+import { Readable } from "stream";
 import {
   TranscribeStreamingClient,
   StartStreamTranscriptionCommand,
@@ -136,7 +137,17 @@ class ProxyTranscribe {
       const result = await s3.send(command);
 
       if (result.Body) {
-        this.payload.unshift(result.Body.toString());
+        // convert to string
+        let body = "";
+        (result.Body as Readable)
+          .setEncoding("utf8")
+          .on("data", chunk => {
+            body += chunk;
+          })
+          .on("end", () => {
+            this.payload.unshift(body);
+            console.log("loadTranscription", this.lid, "Done");
+          });
       }
     } catch (e) {}
 

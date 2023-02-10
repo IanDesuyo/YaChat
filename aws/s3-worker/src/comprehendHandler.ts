@@ -24,8 +24,8 @@ const handler = async (record: S3EventRecord, app: { db: Db; textractClient: Tex
   }
 
   const [, lessonId, comprehendTaskKey] = regexRes;
+  
   const outputFolder = `/tmp/${comprehendTaskKey}`;
-
   fs.mkdirSync(outputFolder, { recursive: true });
 
   const getObjectCommand = new GetObjectCommand({
@@ -33,12 +33,14 @@ const handler = async (record: S3EventRecord, app: { db: Db; textractClient: Tex
     Key: key,
   });
 
+  console.log(`Getting ${key} from S3`);
   const body = await app.s3.send(getObjectCommand).then(data => data.Body as Readable);
+  console.log(body.readableLength);
   const tarStream = tar.x({ cwd: outputFolder });
-
-  body.pipe(tarStream);
+  console.log(`Extracting ${key} to ${outputFolder}`);
 
   tarStream.on("finish", async () => {
+    console.log(`Finish unzip ${key}`);
     const result = JSON.parse(await fs.readFileSync(`${outputFolder}/output`).toString()) as DetectKeyPhrasesResponse;
 
     const keypharses = [];
@@ -64,6 +66,12 @@ const handler = async (record: S3EventRecord, app: { db: Db; textractClient: Tex
 
     console.log("success", lessonId, comprehendTaskKey, res.modifiedCount);
   });
+
+  tarStream.on("error", err => {
+    console.error(`Error unzip ${key}`, err);
+  });
+
+  body.pipe(tarStream);
 };
 
 export default handler;

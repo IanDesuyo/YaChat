@@ -29,6 +29,7 @@ const UploadNoteView = () => {
   const navigate = useNavigate();
   const [isLoading, setLoading] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
+  const [error, setError] = useState("");
   const [result, setResult] = useState<[string, number][]>();
   const { isOpen, onOpen } = useDisclosure();
 
@@ -44,14 +45,24 @@ const UploadNoteView = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     setLoading(true);
+    setError("");
     e.preventDefault();
     e.stopPropagation();
 
+    const nickname = e.currentTarget.elements.namedItem("nickname") as HTMLInputElement;
+
     if (!lessonId || !files.length) {
-      return;
+      setLoading(false);
+      return setError("請選擇檔案");
+    }
+
+    if (!nickname.value) {
+      setLoading(false);
+      return setError("請輸入您的暱稱");
     }
 
     const { noteId, uploadUrls } = await api.createNote(lessonId, {
+      nickname: nickname.value,
       files: files.map(file => ({ size: file.size, name: file.name })),
     });
 
@@ -98,6 +109,9 @@ const UploadNoteView = () => {
             </FormControl>
             <UploadBox files={files} setFiles={setFiles} w="100%" isUploading={isLoading} />
           </VStack>
+
+          {error && <Text color="red.500">{error}</Text>}
+
           <Button mt={6} type="submit" w="100%" isLoading={isLoading}>
             上傳
           </Button>

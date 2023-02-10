@@ -5,25 +5,25 @@ import * as cors from "cors";
 import { APIGatewayEvent } from "aws-lambda";
 
 process.env.AWS_REGION = "us-east-1";
-process.env.AWS_JOB_ARN = "arn:aws:iam::***REMOVED***:role/YaChat";
+process.env.AWS_JOB_ARN = "arn:aws:iam::000000000000:role/YaChat";
 process.env.AWS_S3_BUCKET = "yachat";
-process.env.MONGODB_URI = "mongodb://yachat:***REMOVED***@***REMOVED***:27017";
+process.env.MONGODB_URI = "mongodb://user:pass@127.0.0.1:27017";
 process.env.MONGODB_DB = "YaChat";
 
 const auth = {
-  aud: "***REMOVED***",
-  auth_time: "1655910143",
-  "cognito:username": "***REMOVED***",
-  email: "***REMOVED***",
+  aud: "XXXXXXXXXXXXXXXXXXXXXXXXXX",
+  auth_time: "0",
+  "cognito:username": "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+  email: "test@example.com",
   email_verified: "false",
-  event_id: "6e3129da-7df2-410a-bdc1-576b6b34f7ec",
-  exp: "Wed Jun 22 16:02:23 UTC 2022",
-  iat: "Wed Jun 22 15:02:23 UTC 2022",
-  iss: "https://cognito-idp.us-east-1.amazonaws.com/***REMOVED***",
-  jti: "06146317-e7c3-4c2e-9310-5e1d9e3fdf7f",
+  event_id: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+  exp: "Thu Jan 01 00:00:00 UTC 1970",
+  iat: "Thu Jan 01 00:00:00 UTC 1970",
+  iss: "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_XXXXXXXXX",
+  jti: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   nickname: "Ian",
-  origin_jti: "65fb3096-57cf-433f-ae1c-373d4a2faf89",
-  sub: "***REMOVED***",
+  origin_jti: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
+  sub: "XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX",
   token_use: "id",
 };
 

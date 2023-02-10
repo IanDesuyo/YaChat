@@ -36,7 +36,31 @@ const Recorder = ({ serverUrl, isAnalyzing = false, isAnalyzed = false, handleAn
 
   const start = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices
+        .getUserMedia({ audio: true })
+        .then(stream => stream)
+        .catch(err => {
+          if (err.name === "NotAllowedError") {
+            toast({
+              title: "發生錯誤",
+              description: "請給予麥克風權限",
+              status: "error",
+              duration: 0,
+              isClosable: true,
+            });
+          } else {
+            toast({
+              title: "發生錯誤",
+              description: "請確認麥克風是否開啟",
+              status: "error",
+              duration: 0,
+              isClosable: true,
+            });
+          }
+
+          throw err;
+        });
+
       const audioContext = new AudioContext();
       const mediaStreamSource = audioContext.createMediaStreamSource(stream);
       const scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
@@ -93,13 +117,7 @@ const Recorder = ({ serverUrl, isAnalyzing = false, isAnalyzed = false, handleAn
 
       setWs(ws);
     } catch (e) {
-      toast({
-        title: "Error",
-        description: e as string,
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      console.error(e);
     }
   };
 

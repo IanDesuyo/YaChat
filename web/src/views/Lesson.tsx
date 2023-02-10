@@ -1,13 +1,34 @@
-import { Skeleton, Text, Container, Divider, Wrap, Button, Icon, VStack } from "@chakra-ui/react";
+import {
+  Skeleton,
+  Text,
+  Container,
+  Divider,
+  Wrap,
+  Button,
+  Icon,
+  VStack,
+  Flex,
+  IconButton,
+  Box,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+  Center,
+} from "@chakra-ui/react";
 import { useContext, useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { ApiContext } from "../provider/ApiProvider";
 import { AuthContext } from "../provider/AuthProvider";
 import { LessonWithCourse } from "../types/model";
-import { AiOutlineCloud } from "react-icons/ai";
+import { AiOutlineCloud, AiOutlineQrcode } from "react-icons/ai";
 import { MdUploadFile, MdOutlineInsertDriveFile } from "react-icons/md";
 import { StorageContext } from "../provider/StorageProvider";
 import Recorder from "../components/Recorder";
+import { QRCodeSVG } from "qrcode.react";
 
 const LessonView = () => {
   const { lessonId } = useParams();
@@ -17,6 +38,7 @@ const LessonView = () => {
   const { setRecents } = useContext(StorageContext);
   const [lesson, setLesson] = useState<LessonWithCourse>();
   const [isLoading, setLoading] = useState(true);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     if (lessonId?.length !== 24) {
@@ -44,14 +66,21 @@ const LessonView = () => {
 
   return (
     <Container maxW="container.xl" my={10}>
-      <Skeleton w="fit-content" isLoaded={!isLoading}>
-        <Text fontSize="4xl" mb={4}>
-          {lesson ? `${lesson.course.name} - ${lesson.name}` : "Loading..."}
-        </Text>
-      </Skeleton>
-      <Skeleton w="fit-content" isLoaded={!isLoading}>
-        <Text>{lesson?.description || "The beautiful thing about learning is nobody can take it away from you."}</Text>
-      </Skeleton>
+      <Flex justifyContent="space-between" alignItems="center">
+        <Box>
+          <Skeleton w="fit-content" isLoaded={!isLoading}>
+            <Text fontSize="4xl" mb={4}>
+              {lesson ? `${lesson.course.name} - ${lesson.name}` : "Loading..."}
+            </Text>
+          </Skeleton>
+          <Skeleton w="fit-content" isLoaded={!isLoading}>
+            <Text>
+              {lesson?.description || "The beautiful thing about learning is nobody can take it away from you."}
+            </Text>
+          </Skeleton>
+        </Box>
+        <IconButton size="lg" aria-label="QRCode" icon={<AiOutlineQrcode />} onClick={onOpen} />
+      </Flex>
       <Divider my={4} />
       {!!auth.isAuthenticated && (
         <>
@@ -100,6 +129,16 @@ const LessonView = () => {
           </Button>
         </Skeleton>
       </Wrap>
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>課堂 QR Code</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody mb={4}>
+            <QRCodeSVG value={window.location.href} includeMargin size={512} width="100%" height="auto" />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Container>
   );
 };

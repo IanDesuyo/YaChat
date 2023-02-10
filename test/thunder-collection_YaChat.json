@@ -1,1 +1,245 @@
-{"client":"Thunder Client","collectionName":"YaChat","dateExported":"2022-07-07T14:13:23.474Z","version":"1.1","folders":[],"requests":[{"_id":"3f025d17-19ca-4446-bcfd-490e395f5d79","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"Get courses","url":"{{API_URL}}/courses","method":"GET","sortNum":5000,"created":"2022-06-22T14:52:51.695Z","modified":"2022-06-22T16:43:02.453Z","headers":[{"name":"Authorization","value":"{{ID_TOKEN}}"}],"params":[],"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""},{"type":"json-query","custom":"json.data","action":"istype","value":"array"}]},{"_id":"abaf2b95-87ca-44e0-8dfb-a9d1faf25f4d","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"Get course","url":"{{API_URL}}/course/{{COURSE_ID}}","method":"GET","sortNum":7500,"created":"2022-06-22T15:12:18.020Z","modified":"2022-06-25T15:50:46.899Z","headers":[{"name":"Authorization","value":"{{ID_TOKEN}}"}],"params":[],"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""},{"type":"json-query","custom":"json.data._id","action":"istype","value":"string"},{"type":"json-query","custom":"json.data.lessons","action":"istype","value":"array"}]},{"_id":"b564edea-34a0-4c8c-8b98-82d04f975249","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"Get lesson","url":"{{API_URL}}/lesson/{{LESSON_ID}}","method":"GET","sortNum":8750,"created":"2022-06-22T15:55:38.479Z","modified":"2022-07-03T12:33:57.297Z","headers":[],"params":[],"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""},{"type":"json-query","custom":"json.data._id","action":"istype","value":"string"},{"type":"json-query","custom":"json.data.course._id","action":"istype","value":"string"}]},{"_id":"4c5bc389-5b41-456d-8731-f2d1252d9373","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"Get lesson stream","url":"{{API_URL}}/lesson/{{LESSON_ID}}/stream","method":"GET","sortNum":9375,"created":"2022-06-22T16:32:54.637Z","modified":"2022-06-22T16:47:19.907Z","headers":[{"name":"Authorization","value":"{{ID_TOKEN}}"}],"params":[],"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""},{"type":"json-query","custom":"json.data","action":"regex","value":"^wss:\\/\\/(.*)\\/transcribe\\?lid=([0-9a-f]{24})$"}]},{"_id":"601594cf-ba0d-46dc-acba-2e04173c1848","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"Get lesson analyze","url":"{{API_URL}}/lesson/{{LESSON_ID}}/analyze","method":"GET","sortNum":9531.3,"created":"2022-07-07T13:13:15.736Z","modified":"2022-07-07T14:13:15.066Z","headers":[{"name":"Authorization","value":"{{ID_TOKEN}}"}],"params":[],"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""},{"type":"json-query","custom":"json.data","action":"istype","value":"array"}]},{"_id":"c3a4a3c7-b1a6-4da6-9a10-5b6362aaaca0","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"Get notes","url":"{{API_URL}}/lesson/{{LESSON_ID}}/notes","method":"GET","sortNum":9687.5,"created":"2022-06-23T15:17:24.975Z","modified":"2022-06-28T18:18:24.369Z","headers":[{"name":"Authorization","value":"{{ID_TOKEN}}"}],"params":[],"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""},{"type":"json-query","custom":"json.data","action":"istype","value":"array"}]},{"_id":"f54809bb-478d-4016-9639-e2e350553606","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"Get note","url":"{{API_URL}}/lesson/{{LESSON_ID}}/note/{{NOTE_ID}}","method":"GET","sortNum":9765.6,"created":"2022-06-23T15:21:21.534Z","modified":"2022-06-28T18:18:54.404Z","headers":[],"params":[],"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""},{"type":"json-query","custom":"json.data._id","action":"istype","value":"string"},{"type":"json-query","custom":"json.data.files","action":"istype","value":"array"}]},{"_id":"4bdc602f-d94a-4250-8f42-173c1d28c36b","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"Get note status","url":"{{API_URL}}/lesson/{{LESSON_ID}}/note/{{NOTE_ID}}/status","method":"GET","sortNum":9804.7,"created":"2022-06-23T15:21:55.953Z","modified":"2022-06-28T18:19:29.985Z","headers":[],"params":[],"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""},{"type":"json-query","custom":"json.data","action":"istype","value":"object"},{"type":"json-query","custom":"json.data.analyzed","action":"istype","value":"boolean"}]},{"_id":"ea90792e-0495-41a5-9e76-bdc9384688d0","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"Create note","url":"{{API_URL}}/lesson/{{LESSON_ID}}/note","method":"POST","sortNum":9843.8,"created":"2022-06-23T15:18:26.829Z","modified":"2022-06-23T15:20:11.400Z","headers":[],"params":[],"body":{"type":"json","raw":"{\n  \"files\": [\n    {\n      \"size\": 10000,\n      \"type\": \"image/png\"\n    },\n    {\n      \"size\": 10000,\n      \"type\": \"image/png\"\n    }\n  ]\n}","form":[]},"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""},{"type":"json-query","custom":"json.data._id","action":"istype","value":"string"},{"type":"json-query","custom":"json.data.course._id","action":"istype","value":"string"}]},{"_id":"2d265a48-1817-4c74-a2fb-53ea86f5be7d","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"Create course","url":"{{API_URL}}/course","method":"POST","sortNum":10000,"created":"2022-06-22T14:52:24.181Z","modified":"2022-06-22T16:47:47.635Z","headers":[],"params":[],"body":{"type":"json","raw":"{\n  \"name\": \"TEST\",\n  \"description\": \"description\"\n}","form":[]},"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""},{"type":"json-query","custom":"json.data","action":"istype","value":"string"}]},{"_id":"763b76f6-3075-4aa1-a746-58d11d4f668d","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"Create lesson","url":"{{API_URL}}/lesson","method":"POST","sortNum":20000,"created":"2022-06-22T15:40:25.079Z","modified":"2022-06-22T16:48:12.127Z","headers":[],"params":[],"body":{"type":"json","raw":"{\n  \"name\": \"TEST\",\n  \"description\": \"description\",\n  \"courseId\": \"{{COURSE_ID}}\"\n}","form":[]},"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""},{"type":"json-query","custom":"json.data","action":"istype","value":"string"}]},{"_id":"6f239741-ef7a-430d-8ad0-e128c2ad0ade","colId":"e6818ca9-cc94-48ba-96ae-ba701e655e55","containerId":"","name":"POST lesson analyze","url":"{{API_URL}}/lesson/{{LESSON_ID}}/analyze","method":"POST","sortNum":30000,"created":"2022-07-07T13:13:36.939Z","modified":"2022-07-07T14:13:02.800Z","headers":[{"name":"Authorization","value":"{{ID_TOKEN}}"}],"params":[],"tests":[{"type":"res-code","custom":"","action":"equal","value":"200"},{"type":"res-body","custom":"","action":"isjson","value":""}]}]}
+{
+  "client": "Thunder Client",
+  "collectionName": "YaChat",
+  "dateExported": "2022-07-07T14:13:23.474Z",
+  "version": "1.1",
+  "folders": [],
+  "requests": [
+    {
+      "_id": "3f025d17-19ca-4446-bcfd-490e395f5d79",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "Get courses",
+      "url": "{{API_URL}}/courses",
+      "method": "GET",
+      "sortNum": 5000,
+      "created": "2022-06-22T14:52:51.695Z",
+      "modified": "2022-06-22T16:43:02.453Z",
+      "headers": [{ "name": "Authorization", "value": "{{ID_TOKEN}}" }],
+      "params": [],
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" },
+        { "type": "json-query", "custom": "json.data", "action": "istype", "value": "array" }
+      ]
+    },
+    {
+      "_id": "abaf2b95-87ca-44e0-8dfb-a9d1faf25f4d",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "Get course",
+      "url": "{{API_URL}}/course/{{COURSE_ID}}",
+      "method": "GET",
+      "sortNum": 7500,
+      "created": "2022-06-22T15:12:18.020Z",
+      "modified": "2022-06-25T15:50:46.899Z",
+      "headers": [{ "name": "Authorization", "value": "{{ID_TOKEN}}" }],
+      "params": [],
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" },
+        { "type": "json-query", "custom": "json.data._id", "action": "istype", "value": "string" },
+        { "type": "json-query", "custom": "json.data.lessons", "action": "istype", "value": "array" }
+      ]
+    },
+    {
+      "_id": "b564edea-34a0-4c8c-8b98-82d04f975249",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "Get lesson",
+      "url": "{{API_URL}}/lesson/{{LESSON_ID}}",
+      "method": "GET",
+      "sortNum": 8750,
+      "created": "2022-06-22T15:55:38.479Z",
+      "modified": "2022-07-03T12:33:57.297Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" },
+        { "type": "json-query", "custom": "json.data._id", "action": "istype", "value": "string" },
+        { "type": "json-query", "custom": "json.data.course._id", "action": "istype", "value": "string" }
+      ]
+    },
+    {
+      "_id": "4c5bc389-5b41-456d-8731-f2d1252d9373",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "Get lesson stream",
+      "url": "{{API_URL}}/lesson/{{LESSON_ID}}/stream",
+      "method": "GET",
+      "sortNum": 9375,
+      "created": "2022-06-22T16:32:54.637Z",
+      "modified": "2022-06-22T16:47:19.907Z",
+      "headers": [{ "name": "Authorization", "value": "{{ID_TOKEN}}" }],
+      "params": [],
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" },
+        {
+          "type": "json-query",
+          "custom": "json.data",
+          "action": "regex",
+          "value": "^wss:\\/\\/(.*)\\/transcribe\\?lid=([0-9a-f]{24})$"
+        }
+      ]
+    },
+    {
+      "_id": "601594cf-ba0d-46dc-acba-2e04173c1848",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "Get lesson analyze",
+      "url": "{{API_URL}}/lesson/{{LESSON_ID}}/analyze",
+      "method": "GET",
+      "sortNum": 9531.3,
+      "created": "2022-07-07T13:13:15.736Z",
+      "modified": "2022-07-07T14:13:15.066Z",
+      "headers": [{ "name": "Authorization", "value": "{{ID_TOKEN}}" }],
+      "params": [],
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" },
+        { "type": "json-query", "custom": "json.data", "action": "istype", "value": "array" }
+      ]
+    },
+    {
+      "_id": "c3a4a3c7-b1a6-4da6-9a10-5b6362aaaca0",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "Get notes",
+      "url": "{{API_URL}}/lesson/{{LESSON_ID}}/notes",
+      "method": "GET",
+      "sortNum": 9687.5,
+      "created": "2022-06-23T15:17:24.975Z",
+      "modified": "2022-06-28T18:18:24.369Z",
+      "headers": [{ "name": "Authorization", "value": "{{ID_TOKEN}}" }],
+      "params": [],
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" },
+        { "type": "json-query", "custom": "json.data", "action": "istype", "value": "array" }
+      ]
+    },
+    {
+      "_id": "f54809bb-478d-4016-9639-e2e350553606",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "Get note",
+      "url": "{{API_URL}}/lesson/{{LESSON_ID}}/note/{{NOTE_ID}}",
+      "method": "GET",
+      "sortNum": 9765.6,
+      "created": "2022-06-23T15:21:21.534Z",
+      "modified": "2022-06-28T18:18:54.404Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" },
+        { "type": "json-query", "custom": "json.data._id", "action": "istype", "value": "string" },
+        { "type": "json-query", "custom": "json.data.files", "action": "istype", "value": "array" }
+      ]
+    },
+    {
+      "_id": "4bdc602f-d94a-4250-8f42-173c1d28c36b",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "Get note status",
+      "url": "{{API_URL}}/lesson/{{LESSON_ID}}/note/{{NOTE_ID}}/status",
+      "method": "GET",
+      "sortNum": 9804.7,
+      "created": "2022-06-23T15:21:55.953Z",
+      "modified": "2022-06-28T18:19:29.985Z",
+      "headers": [],
+      "params": [],
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" },
+        { "type": "json-query", "custom": "json.data", "action": "istype", "value": "object" },
+        { "type": "json-query", "custom": "json.data.analyzed", "action": "istype", "value": "boolean" }
+      ]
+    },
+    {
+      "_id": "ea90792e-0495-41a5-9e76-bdc9384688d0",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "Create note",
+      "url": "{{API_URL}}/lesson/{{LESSON_ID}}/note",
+      "method": "POST",
+      "sortNum": 9843.8,
+      "created": "2022-06-23T15:18:26.829Z",
+      "modified": "2022-06-23T15:20:11.400Z",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"files\": [\n    {\n      \"size\": 10000,\n      \"type\": \"image/png\"\n    },\n    {\n      \"size\": 10000,\n      \"type\": \"image/png\"\n    }\n  ]\n}",
+        "form": []
+      },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" },
+        { "type": "json-query", "custom": "json.data._id", "action": "istype", "value": "string" },
+        { "type": "json-query", "custom": "json.data.course._id", "action": "istype", "value": "string" }
+      ]
+    },
+    {
+      "_id": "2d265a48-1817-4c74-a2fb-53ea86f5be7d",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "Create course",
+      "url": "{{API_URL}}/course",
+      "method": "POST",
+      "sortNum": 10000,
+      "created": "2022-06-22T14:52:24.181Z",
+      "modified": "2022-06-22T16:47:47.635Z",
+      "headers": [],
+      "params": [],
+      "body": { "type": "json", "raw": "{\n  \"name\": \"TEST\",\n  \"description\": \"description\"\n}", "form": [] },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" },
+        { "type": "json-query", "custom": "json.data", "action": "istype", "value": "string" }
+      ]
+    },
+    {
+      "_id": "763b76f6-3075-4aa1-a746-58d11d4f668d",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "Create lesson",
+      "url": "{{API_URL}}/lesson",
+      "method": "POST",
+      "sortNum": 20000,
+      "created": "2022-06-22T15:40:25.079Z",
+      "modified": "2022-06-22T16:48:12.127Z",
+      "headers": [],
+      "params": [],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"TEST\",\n  \"description\": \"description\",\n  \"courseId\": \"{{COURSE_ID}}\"\n}",
+        "form": []
+      },
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" },
+        { "type": "json-query", "custom": "json.data", "action": "istype", "value": "string" }
+      ]
+    },
+    {
+      "_id": "6f239741-ef7a-430d-8ad0-e128c2ad0ade",
+      "colId": "e6818ca9-cc94-48ba-96ae-ba701e655e55",
+      "containerId": "",
+      "name": "POST lesson analyze",
+      "url": "{{API_URL}}/lesson/{{LESSON_ID}}/analyze",
+      "method": "POST",
+      "sortNum": 30000,
+      "created": "2022-07-07T13:13:36.939Z",
+      "modified": "2022-07-07T14:13:02.800Z",
+      "headers": [{ "name": "Authorization", "value": "{{ID_TOKEN}}" }],
+      "params": [],
+      "tests": [
+        { "type": "res-code", "custom": "", "action": "equal", "value": "200" },
+        { "type": "res-body", "custom": "", "action": "isjson", "value": "" }
+      ]
+    }
+  ]
+}

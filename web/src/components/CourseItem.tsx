@@ -30,7 +30,7 @@ export const CourseItemNew = () => {
   return (
     <Box
       as={Link}
-      to="/course/new"
+      to="/courses/new"
       _hover={{ bg: useColorModeValue("gray.100", "gray.900") }}
       borderRadius="xl"
       p={4}
